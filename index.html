@@ -305,7 +305,8 @@
     .group-grid,
     .profile-shell,
     .chat-grid,
-    .settings-grid {
+    .settings-grid,
+    .settings-shell {
       display: grid;
       gap: 18px;
     }
@@ -315,8 +316,119 @@
     .profile-shell { grid-template-columns: 1fr 1fr; }
     .chat-grid { grid-template-columns: 320px minmax(0, 1fr); }
     .settings-grid { grid-template-columns: 1fr 1fr; }
+    .settings-shell { grid-template-columns: 280px minmax(0, 1fr); }
 
     .profile-card { display: grid; gap: 18px; align-items: start; }
+
+    .settings-sidebar {
+      min-width: 240px;
+      display: grid;
+      gap: 20px;
+    }
+
+    .settings-header h2 {
+      margin: 0 0 8px;
+      font-size: 1.5rem;
+    }
+
+    .settings-nav {
+      display: grid;
+      gap: 10px;
+    }
+
+    .settings-nav button {
+      width: 100%;
+      text-align: left;
+      padding: 14px 18px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,0.08);
+      transition: background 0.2s ease, border-color 0.2s ease;
+    }
+
+    .settings-nav button.active,
+    .settings-nav button:hover {
+      background: rgba(31, 41, 55, 0.95);
+      border-color: rgba(127,93,255,0.5);
+    }
+
+    .settings-content {
+      display: grid;
+      gap: 18px;
+    }
+
+    .settings-summary-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .settings-meta {
+      display: grid;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .settings-detail h3 {
+      margin-top: 0;
+      font-size: 1.35rem;
+    }
+
+    .settings-detail .control-group {
+      display: grid;
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .settings-card-grid {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+
+    .settings-panel {
+      padding: 18px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 22px;
+    }
+
+    .settings-panel strong {
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .settings-toggle {
+      display: grid;
+      gap: 8px;
+    }
+
+    .settings-toggle label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 18px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .settings-toggle input {
+      margin: 0;
+      width: auto;
+    }
+
+    .mention {
+      color: var(--accent-2);
+      font-weight: 700;
+      background: rgba(25, 192, 255, 0.16);
+      padding: 2px 6px;
+      border-radius: 12px;
+    }
     .profile-info h2 { margin: 0; }
     .profile-info p { margin: 4px 0; color: var(--muted); }
 
@@ -355,8 +467,42 @@
     .dm-thread-copy strong, .dm-thread-copy span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .dm-title { display: inline-flex; align-items: center; gap: 10px; }
 
-    .message-input { display: grid; gap: 12px; }
+    .message-input { display: grid; gap: 12px; position: relative; }
     .message-input textarea { resize: vertical; min-height: 76px; }
+
+    .mention-wrapper { position: relative; }
+    .mention-dropdown {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 100%;
+      margin-top: 10px;
+      max-height: 280px;
+      overflow: auto;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(10,15,24,0.96);
+      box-shadow: 0 24px 48px rgba(0,0,0,0.28);
+      z-index: 40;
+      padding: 6px 0;
+    }
+    .mention-dropdown.hidden { display: none; }
+    .mention-dropdown li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 16px;
+      cursor: pointer;
+      transition: background 0.18s ease;
+      color: var(--text);
+    }
+    .mention-dropdown li:hover,
+    .mention-dropdown li.active {
+      background: rgba(255,255,255,0.08);
+    }
+    .mention-dropdown .mention-title { font-weight: 700; }
+    .mention-dropdown .mention-subtext { color: var(--muted); font-size: 0.92rem; }
 
     .chat-toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
     .chat-toolbar button { padding: 10px 12px; border-radius: 18px; background: rgba(255,255,255,0.08); color: var(--text); }
@@ -372,7 +518,7 @@
     .emoji-panel button { font-size: 1.25rem; padding: 10px; border-radius: 14px; background: rgba(255,255,255,0.06); }
     .emoji-panel button:hover { background: rgba(255,255,255,0.1); }
 
-    .video-layout { display: grid; grid-template-columns: 1.6fr 0.9fr; gap: 18px; align-items: start; }
+    .video-layout { display: grid; grid-template-columns: 1.3fr 0.9fr; gap: 18px; align-items: start; }
     .video-section { display: grid; gap: 16px; }
     .participant-panel { display: grid; gap: 16px; }
     .participant-card { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px; border-radius: 20px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); }
@@ -384,6 +530,29 @@
     .call-controls { display: flex; gap: 12px; flex-wrap: wrap; }
     .call-controls button { min-width: 140px; }
     .call-status { display: flex; gap: 10px; align-items: center; color: var(--muted); }
+
+    .call-sidebar {
+      display: grid;
+      gap: 16px;
+      min-width: 320px;
+      max-height: calc(100vh - 280px);
+      overflow: hidden;
+    }
+    .call-sidebar-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+    .call-chat-tabs { display: flex; gap: 10px; flex-wrap: wrap; }
+    .call-chat-tabs button { flex: 1 1 30%; padding: 10px 12px; border-radius: 18px; font-size: 0.9rem; }
+    .call-chat-tabs button.active { background: rgba(127,93,255,0.18); border: 1px solid rgba(127,93,255,0.5); }
+    .call-chat-controls { display: grid; gap: 10px; }
+    .call-chat-room { min-height: 240px; max-height: 360px; overflow-y: auto; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; padding: 16px; }
+    .profile-preview-box { width: min(760px,100%); }
+    .profile-preview-card { display: grid; gap: 18px; }
+    .profile-preview-hero { display: grid; grid-template-columns: 140px minmax(0,1fr); gap: 18px; align-items: center; }
+    .preview-avatar { width: 120px; height: 120px; font-size: 2rem; }
+    .profile-preview-info h2 { margin: 0; }
+    .profile-preview-info p { margin: 8px 0; }
+    .profile-preview-stats { display: flex; gap: 10px; flex-wrap: wrap; }
+    .profile-preview-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    .profile-preview-actions button { flex: 1 1 auto; }
 
     .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.72); display: none; justify-content: center; align-items: center; z-index: 50; padding: 24px; }
     .modal-overlay.active { display: flex; }
@@ -436,7 +605,7 @@
           <div class="hero-copy">
             <p class="neon-title">Open world chat network</p>
             <h1>Connect with players, manage friends, and game together in real time.</h1>
-            <p>Sign in to use world chat, direct messages, friend status, group rooms with video calling, game tracking, activity history, and a full profile hub.</p>
+            <p>Open the site from any browser on PC, laptop, or mobile and connect instantly with world chat, direct messages, group rooms, video calls, activity history, and a full profile hub.</p>
             <div class="hero-actions">
               <button class="btn btn-accent" data-section="loginSection">Login</button>
               <button class="btn btn-ghost" data-section="registerSection">Register</button>
@@ -563,7 +732,10 @@
               <input type="file" id="worldAttachmentInput" class="hidden" accept="image/*,video/*,audio/*" multiple />
             </div>
             <div id="worldAttachmentPreview" class="attachment-preview"></div>
-            <textarea name="message" class="form-control" placeholder="Type a message for the world..."></textarea>
+            <div class="mention-wrapper">
+              <textarea name="message" class="form-control mention-input" placeholder="Type a message for the world..."></textarea>
+              <div class="mention-dropdown hidden" aria-live="polite"></div>
+            </div>
             <button type="submit" class="btn btn-accent">Send</button>
           </form>
         </div>
@@ -689,18 +861,34 @@
       </section>
 
       <section id="settingsSection" class="hidden glass-panel">
-        <div class="settings-grid">
-          <div class="glass-card neon-card">
-            <h2>Activity History</h2>
-            <p class="text-slate-400">Track every game session and see how long you played.</p>
-            <ul class="activity-history" id="activityHistory"></ul>
-          </div>
-          <div class="glass-card neon-card">
-            <h2>Account Settings</h2>
-            <p class="text-slate-400">Your profile, privacy, and session details live here.</p>
-            <p><strong>Current user:</strong> <span id="settingsUser"></span></p>
-            <p><strong>Status:</strong> <span id="settingsStatus"></span></p>
-            <button id="logoutButtonSettings" class="btn btn-ghost" style="margin-top: 18px;">Logout</button>
+        <div class="settings-shell">
+          <aside class="settings-sidebar glass-card neon-card">
+            <div class="settings-header">
+              <h2>Settings</h2>
+              <p class="text-slate-400">Organize your account, policies, and experience options.</p>
+            </div>
+            <div class="settings-nav" id="settingsNav"></div>
+          </aside>
+          <div class="settings-content">
+            <div class="settings-summary glass-card neon-card">
+              <div class="settings-summary-header">
+                <div>
+                  <h2 id="settingsUserSummary">Content & Social</h2>
+                  <p class="text-slate-400">Fine-tune how your account interacts with the platform.</p>
+                </div>
+                <button id="logoutButtonSettings" class="btn btn-ghost">Logout</button>
+              </div>
+              <div class="settings-meta">
+                <p><strong>Current user:</strong> <span id="settingsUser"></span></p>
+                <p><strong>Status:</strong> <span id="settingsStatus"></span></p>
+              </div>
+            </div>
+            <div class="settings-detail glass-card neon-card" id="settingsDetail"></div>
+            <div class="glass-card neon-card">
+              <h3>Activity History</h3>
+              <p class="text-slate-400">Track every game session and see how long you played.</p>
+              <ul class="activity-history" id="activityHistory"></ul>
+            </div>
           </div>
         </div>
       </section>
@@ -742,6 +930,53 @@
           <h3>Participants</h3>
           <div id="participantPanel"></div>
         </div>
+        <aside class="call-sidebar glass-card neon-card">
+          <div class="call-sidebar-header">
+            <div>
+              <h3>Call chat</h3>
+              <p class="text-slate-400">Chat while you stay connected to the call.</p>
+            </div>
+          </div>
+          <div class="call-chat-tabs" id="callChatTabs">
+            <button type="button" class="btn btn-ghost active" data-chat-view="world">World</button>
+            <button type="button" class="btn btn-ghost" data-chat-view="dm">DM</button>
+            <button type="button" class="btn btn-ghost" data-chat-view="group">Group</button>
+          </div>
+          <div class="call-chat-controls" id="callChatControls">
+            <select id="callDmSelect" class="form-control hidden"></select>
+            <select id="callGroupSelect" class="form-control hidden"></select>
+          </div>
+          <div class="chat-room call-chat-room" id="callChatRoom"></div>
+          <form id="callChatForm" class="message-input">
+            <textarea name="message" class="form-control" placeholder="Type a message while on call..."></textarea>
+            <button type="submit" class="btn btn-accent">Send</button>
+          </form>
+        </aside>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="profilePreviewOverlay">
+    <div class="modal-box profile-preview-box">
+      <button id="closeProfilePreview" class="btn btn-ghost" style="position:absolute;top:16px;right:16px;">Close</button>
+      <div class="profile-preview-card">
+        <div class="profile-preview-hero">
+          <div class="avatar-circle preview-avatar" id="previewAvatar">P</div>
+          <div class="profile-preview-info">
+            <h2 id="previewName">Player</h2>
+            <p id="previewTag">#0000</p>
+            <p id="previewEmail">email@example.com</p>
+            <p id="previewBio" class="text-slate-400">Bio appears here.</p>
+            <div class="profile-preview-stats">
+              <span class="tag">Level <strong id="previewLevel">1</strong></span>
+              <span class="tag">XP <strong id="previewXp">0</strong></span>
+            </div>
+          </div>
+        </div>
+        <div class="profile-preview-actions">
+          <button type="button" id="previewMessageBtn" class="btn btn-accent">Message</button>
+          <button type="button" id="previewFriendBtn" class="btn btn-ghost">Add Friend</button>
+        </div>
       </div>
     </div>
   </div>
@@ -767,6 +1002,34 @@
       muted: false,
       hidden: false
     };
+
+    const SETTINGS_CATEGORIES = [
+      { id: 'content_social', label: 'Content & Social' },
+      { id: 'data_privacy', label: 'Data & Privacy' },
+      { id: 'authorized_app', label: 'Authorized App' },
+      { id: 'connection', label: 'Connection' },
+      { id: 'notification', label: 'Notification' },
+      { id: 'billing_overview', label: 'BILLING' },
+      { id: 'subscriptions', label: 'Subscriptions' },
+      { id: 'gift_inventory', label: 'Gift Inventory' },
+      { id: 'billing_history', label: 'Billing' },
+      { id: 'voice_video', label: 'Voice & Video' },
+      { id: 'appearance', label: 'Appearance' },
+      { id: 'accessibility', label: 'Accessibility' },
+      { id: 'system', label: 'System' },
+      { id: 'language_time', label: 'Language & Time' }
+    ];
+
+    const DEFAULT_PREFERENCES = {
+      content_social: { feedDiscovery: true, socialSearch: true, activitySharing: false },
+      data_privacy: { profileVisibility: 'Friends', showOnlineStatus: true, saveHistory: true },
+      notification: { emailUpdates: true, pushAlerts: true, mentionAlerts: true },
+      appearance: { theme: 'dark', chatDensity: 'comfortable', reducedMotion: false },
+      voice_video: { noiseSuppression: true, cameraAuto: true },
+      language_time: { language: 'English', timezone: 'UTC' }
+    };
+
+    let activeSettingsCategory = 'content_social';
 
     const defaultAccounts = [
       {
@@ -1046,9 +1309,9 @@
           setSection(section);
         });
       });
-      const logoutBtn = document.querySelector('#logoutButtonSettings');
-      if (logoutBtn) {
-        logoutBtn.addEventListener('click', event => {
+      const logoutButton = document.querySelector('#logoutButtonSettings');
+      if (logoutButton) {
+        logoutButton.addEventListener('click', event => {
           event.preventDefault();
           const user = getCurrentUser();
           if (user) {
@@ -1138,20 +1401,6 @@
       activityShell.innerHTML = history.length ? history.map(entry => `<li><strong>${entry.game}</strong> • ${formatShortTime(entry.started)} • ${formatDuration(entry.duration)}</li>`).join('') : '<li>No recent game sessions.</li>';
 
       buildAvatarElement(document.querySelector('#dashboardAvatar'), user);
-    }
-
-    function renderWorldChat() {
-      const chatRoom = document.querySelector('#worldChatRoom');
-      if (!chatRoom) {
-        return;
-      }
-      const messages = getWorldChat().slice(-80);
-      chatRoom.innerHTML = messages.map(message => {
-        const time = formatShortTime(message.time);
-        const sender = getAccount(message.sender);
-        return `<div class="chat-message with-avatar">${avatarMarkup(sender, 'message-avatar')}<div class="bubble"><strong>${escapeHtml(message.sender)}</strong><br>${escapeHtml(message.text)}</div><div class="meta">${time}</div></div>`;
-      }).join('');
-      chatRoom.scrollTop = chatRoom.scrollHeight;
     }
 
     function escapeHtml(text) {
@@ -1250,9 +1499,436 @@
       }
       document.querySelector('#settingsUser').textContent = `${user.username} ${user.usertag}`;
       document.querySelector('#settingsStatus').textContent = getFriendStatus(user.username) ? 'Online' : 'Offline';
+      document.querySelector('#settingsUserSummary').textContent = SETTINGS_CATEGORIES.find(cat => cat.id === activeSettingsCategory)?.label || 'Content & Social';
+      renderSettingsNavigation();
+      renderSettingsDetail();
       const activityShell = document.querySelector('#activityHistory');
       const sessions = user.gameHistory || [];
       activityShell.innerHTML = sessions.length ? sessions.map(item => `<li><strong>${item.game}</strong><br><span class="text-slate-400">${formatShortTime(item.started)} • ${formatDuration(item.duration)}</span></li>`).join('') : '<li>No activity history available.</li>';
+    }
+
+    function getSettingPreferences() {
+      const raw = localStorage.getItem('ngp_preferences');
+      try {
+        return raw ? JSON.parse(raw) : DEFAULT_PREFERENCES;
+      } catch (error) {
+        return DEFAULT_PREFERENCES;
+      }
+    }
+
+    function saveSettingPreferences(preferences) {
+      localStorage.setItem('ngp_preferences', JSON.stringify(preferences));
+    }
+
+    function renderSettingsNavigation() {
+      const nav = document.querySelector('#settingsNav');
+      if (!nav) {
+        return;
+      }
+      nav.innerHTML = SETTINGS_CATEGORIES.map(category => {
+        return `<button type="button" class="${category.id === activeSettingsCategory ? 'active' : ''}" data-setting="${category.id}">${category.label}</button>`;
+      }).join('');
+      nav.querySelectorAll('button').forEach(button => {
+        button.addEventListener('click', () => {
+          activeSettingsCategory = button.dataset.setting;
+          renderSettings();
+        });
+      });
+    }
+
+    function renderSettingsDetail() {
+      const prefs = getSettingPreferences();
+      const detail = document.querySelector('#settingsDetail');
+      if (!detail) {
+        return;
+      }
+      const section = activeSettingsCategory;
+      detail.innerHTML = getSettingsSectionMarkup(section, prefs[section] || {});
+      detail.querySelectorAll('input, select').forEach(input => {
+        input.addEventListener('change', event => {
+          const { name, type, checked, value } = event.target;
+          const preferences = getSettingPreferences();
+          if (!preferences[section]) {
+            preferences[section] = {};
+          }
+          preferences[section][name] = type === 'checkbox' ? checked : value;
+          saveSettingPreferences(preferences);
+        });
+      });
+    }
+
+    function getSettingsSectionMarkup(section, options) {
+      const current = opts => options[opts] === undefined ? DEFAULT_PREFERENCES[section]?.[opts] : options[opts];
+      switch (section) {
+        case 'content_social':
+          return `
+            <h3>Content & Social</h3>
+            <p class="text-slate-400">Manage feeds, discovery, and social interactions.</p>
+            <div class="settings-toggle">
+              <label>Discover new content <input type="checkbox" name="feedDiscovery" ${current('feedDiscovery') ? 'checked' : ''} /></label>
+              <label>Allow search by username <input type="checkbox" name="socialSearch" ${current('socialSearch') ? 'checked' : ''} /></label>
+              <label>Share activity publicly <input type="checkbox" name="activitySharing" ${current('activitySharing') ? 'checked' : ''} /></label>
+            </div>
+          `;
+        case 'data_privacy':
+          return `
+            <h3>Data & Privacy</h3>
+            <p class="text-slate-400">Control visibility, status, and history storage.</p>
+            <div class="settings-toggle">
+              <label>Profile visibility
+                <select name="profileVisibility">
+                  <option value="Everyone" ${current('profileVisibility') === 'Everyone' ? 'selected' : ''}>Everyone</option>
+                  <option value="Friends" ${current('profileVisibility') === 'Friends' ? 'selected' : ''}>Friends</option>
+                  <option value="Private" ${current('profileVisibility') === 'Private' ? 'selected' : ''}>Private</option>
+                </select>
+              </label>
+              <label>Show online status <input type="checkbox" name="showOnlineStatus" ${current('showOnlineStatus') ? 'checked' : ''} /></label>
+              <label>Save chat history <input type="checkbox" name="saveHistory" ${current('saveHistory') ? 'checked' : ''} /></label>
+            </div>
+          `;
+        case 'authorized_app':
+          return `
+            <h3>Authorized App</h3>
+            <p class="text-slate-400">Review connected applications and revoke access.</p>
+            <div class="settings-card-grid">
+              <div class="settings-panel"><strong>Argo Launcher</strong><p class="text-slate-400">Active · Last used 2 hours ago</p></div>
+              <div class="settings-panel"><strong>Voice Chat Pro</strong><p class="text-slate-400">Active · Last used yesterday</p></div>
+            </div>
+          `;
+        case 'connection':
+          return `
+            <h3>Connection</h3>
+            <p class="text-slate-400">Set connection preferences and server selection.</p>
+            <div class="settings-toggle">
+              <label>Auto-select best server <input type="checkbox" name="autoServer" checked /></label>
+              <label>Network diagnostics <input type="checkbox" name="networkDiagnostics" checked /></label>
+            </div>
+          `;
+        case 'notification':
+          return `
+            <h3>Notification</h3>
+            <p class="text-slate-400">Choose how you receive alerts and updates.</p>
+            <div class="settings-toggle">
+              <label>Email updates <input type="checkbox" name="emailUpdates" ${current('emailUpdates') ? 'checked' : ''} /></label>
+              <label>Push alerts <input type="checkbox" name="pushAlerts" ${current('pushAlerts') ? 'checked' : ''} /></label>
+              <label>Mention alerts <input type="checkbox" name="mentionAlerts" ${current('mentionAlerts') ? 'checked' : ''} /></label>
+            </div>
+          `;
+        case 'billing_overview':
+          return `
+            <h3>Billing</h3>
+            <p class="text-slate-400">View payment methods and account charges.</p>
+            <div class="settings-card-grid">
+              <div class="settings-panel"><strong>Primary card</strong><p class="text-slate-400">Visa ending in 1234</p></div>
+              <div class="settings-panel"><strong>Balance</strong><p class="text-slate-400">$12.50 remaining</p></div>
+            </div>
+          `;
+        case 'subscriptions':
+          return `
+            <h3>Subscriptions</h3>
+            <p class="text-slate-400">Manage paid plans and active subscriptions.</p>
+            <div class="settings-card-grid">
+              <div class="settings-panel"><strong>Premium Tier</strong><p class="text-slate-400">Active · Next renewal in 16 days</p></div>
+              <div class="settings-panel"><strong>Game Boost</strong><p class="text-slate-400">Inactive</p></div>
+            </div>
+          `;
+        case 'gift_inventory':
+          return `
+            <h3>Gift Inventory</h3>
+            <p class="text-slate-400">Track current gifts, codes, and collectibles.</p>
+            <div class="settings-card-grid">
+              <div class="settings-panel"><strong>Voucher Pack</strong><p class="text-slate-400">1 available</p></div>
+              <div class="settings-panel"><strong>Gift crate</strong><p class="text-slate-400">No open crates</p></div>
+            </div>
+          `;
+        case 'billing_history':
+          return `
+            <h3>Billing History</h3>
+            <p class="text-slate-400">Review recent invoices and subscription charges.</p>
+            <ul class="activity-history">
+              <li><strong>Premium renewal</strong><br><span class="text-slate-400">$4.99 • 3 days ago</span></li>
+              <li><strong>Game pass</strong><br><span class="text-slate-400">$1.99 • 2 weeks ago</span></li>
+            </ul>
+          `;
+        case 'voice_video':
+          return `
+            <h3>Voice & Video</h3>
+            <p class="text-slate-400">Optimize audio and camera settings for calls.</p>
+            <div class="settings-toggle">
+              <label>Noise suppression <input type="checkbox" name="noiseSuppression" ${current('noiseSuppression') ? 'checked' : ''} /></label>
+              <label>Auto camera <input type="checkbox" name="cameraAuto" ${current('cameraAuto') ? 'checked' : ''} /></label>
+            </div>
+          `;
+        case 'appearance':
+          return `
+            <h3>Appearance</h3>
+            <p class="text-slate-400">Adjust theme, chat density, and motion preferences.</p>
+            <div class="settings-toggle">
+              <label>Theme
+                <select name="theme">
+                  <option value="dark" ${current('theme') === 'dark' ? 'selected' : ''}>Dark</option>
+                  <option value="light" ${current('theme') === 'light' ? 'selected' : ''}>Light</option>
+                </select>
+              </label>
+              <label>Chat density
+                <select name="chatDensity">
+                  <option value="comfortable" ${current('chatDensity') === 'comfortable' ? 'selected' : ''}>Comfortable</option>
+                  <option value="compact" ${current('chatDensity') === 'compact' ? 'selected' : ''}>Compact</option>
+                </select>
+              </label>
+              <label>Reduced motion <input type="checkbox" name="reducedMotion" ${current('reducedMotion') ? 'checked' : ''} /></label>
+            </div>
+          `;
+        case 'accessibility':
+          return `
+            <h3>Accessibility</h3>
+            <p class="text-slate-400">Enable accessibility features for a better experience.</p>
+            <div class="settings-toggle">
+              <label>High contrast <input type="checkbox" name="highContrast" /></label>
+              <label>Text scaling <input type="checkbox" name="textScaling" /></label>
+            </div>
+          `;
+        case 'system':
+          return `
+            <h3>System</h3>
+            <p class="text-slate-400">Inspect browser compatibility and local resources.</p>
+            <div class="settings-card-grid">
+              <div class="settings-panel"><strong>Browser</strong><p class="text-slate-400">${navigator.userAgent}</p></div>
+              <div class="settings-panel"><strong>Platform</strong><p class="text-slate-400">${navigator.platform}</p></div>
+            </div>
+          `;
+        case 'language_time':
+          return `
+            <h3>Language & Time</h3>
+            <p class="text-slate-400">Select your language and local time zone.</p>
+            <div class="settings-toggle">
+              <label>Language
+                <select name="language">
+                  <option value="English" ${current('language') === 'English' ? 'selected' : ''}>English</option>
+                  <option value="Spanish" ${current('language') === 'Spanish' ? 'selected' : ''}>Spanish</option>
+                </select>
+              </label>
+              <label>Time zone
+                <select name="timezone">
+                  <option value="UTC" ${current('timezone') === 'UTC' ? 'selected' : ''}>UTC</option>
+                  <option value="Local" ${current('timezone') === 'Local' ? 'selected' : ''}>Local</option>
+                </select>
+              </label>
+            </div>
+          `;
+        default:
+          return `<p class="text-slate-400">Coming soon.</p>`;
+      }
+    }
+
+    function formatMentions(message) {
+      return escapeHtml(message).replace(/@([a-zA-Z0-9_]+)/g, '<span class="mention">@$1</span>');
+    }
+
+    let mentionDropdownState = {
+      activeForm: null,
+      items: [],
+      selectedIndex: 0
+    };
+
+    function getMentionCandidates(query = '', group = null) {
+      const current = getCurrentUser();
+      const available = [];
+      const normalizedQuery = normalize(query);
+      if (!group) {
+        available.push({ username: 'everyone', label: 'everyone', subtitle: 'Mention everyone in this chat' });
+        loadAccounts().forEach(account => {
+          if (account.username !== current?.username) {
+            available.push({ username: account.username, label: account.username, subtitle: account.usertag || account.email || 'Player' });
+          }
+        });
+      } else {
+        available.push({ username: 'everyone', label: 'everyone', subtitle: 'Mention everyone in this group' });
+        group.members.forEach(memberName => {
+          if (memberName !== current?.username) {
+            const account = getAccount(memberName);
+            available.push({ username: memberName, label: memberName, subtitle: account?.usertag || account?.email || 'Player' });
+          }
+        });
+      }
+      return available.filter(item => !normalizedQuery || item.username.toLowerCase().includes(normalizedQuery)).slice(0, 8);
+    }
+
+    function renderMentionDropdown(form, candidates) {
+      const menu = form.querySelector('.mention-dropdown');
+      if (!menu) {
+        return;
+      }
+      if (!candidates.length) {
+        return closeMentionDropdown(form);
+      }
+      mentionDropdownState.activeForm = form;
+      mentionDropdownState.items = candidates;
+      mentionDropdownState.selectedIndex = 0;
+      menu.innerHTML = candidates.map((item, index) => {
+        return `<li class="${index === 0 ? 'active' : ''}" data-value="${escapeHtml(item.username)}"><span class="mention-title">@${escapeHtml(item.label)}</span><span class="mention-subtext">${escapeHtml(item.subtitle)}</span></li>`;
+      }).join('');
+      menu.classList.remove('hidden');
+      menu.querySelectorAll('li').forEach((item, index) => {
+        item.addEventListener('mousedown', event => {
+          event.preventDefault();
+          chooseMention(form, item.dataset.value);
+        });
+      });
+    }
+
+    function closeMentionDropdown(form) {
+      const menu = form?.querySelector('.mention-dropdown');
+      if (menu) {
+        menu.classList.add('hidden');
+        menu.innerHTML = '';
+      }
+      mentionDropdownState.activeForm = null;
+      mentionDropdownState.items = [];
+      mentionDropdownState.selectedIndex = 0;
+    }
+
+    function updateMentionSelection(form, direction) {
+      const menu = form.querySelector('.mention-dropdown');
+      const items = Array.from(menu.querySelectorAll('li'));
+      if (!items.length) {
+        return;
+      }
+      mentionDropdownState.selectedIndex = (mentionDropdownState.selectedIndex + direction + items.length) % items.length;
+      items.forEach((item, index) => item.classList.toggle('active', index === mentionDropdownState.selectedIndex));
+      items[mentionDropdownState.selectedIndex]?.scrollIntoView({ block: 'nearest' });
+    }
+
+    function chooseMention(form, username) {
+      const textarea = form.querySelector('textarea.mention-input');
+      if (!textarea) {
+        return;
+      }
+      const cursor = textarea.selectionStart;
+      const prefix = textarea.value.slice(0, cursor);
+      const match = prefix.match(/(?:^|\s)@([a-zA-Z0-9_]*)$/);
+      if (!match) {
+        return closeMentionDropdown(form);
+      }
+      const mentionStart = match.index + match[0].lastIndexOf('@');
+      const before = textarea.value.slice(0, mentionStart);
+      const after = textarea.value.slice(cursor);
+      textarea.value = `${before}@${username} ${after}`;
+      const newCursor = before.length + username.length + 2;
+      textarea.setSelectionRange(newCursor, newCursor);
+      textarea.focus();
+      closeMentionDropdown(form);
+    }
+
+    function handleMentionInput(event) {
+      const textarea = event.currentTarget;
+      const form = textarea.closest('form');
+      const cursor = textarea.selectionStart;
+      const textBefore = textarea.value.slice(0, cursor);
+      const mentionMatch = textBefore.match(/(?:^|\s)@([a-zA-Z0-9_]*)$/);
+      if (!mentionMatch) {
+        closeMentionDropdown(form);
+        return;
+      }
+      const query = mentionMatch[1];
+      const group = form.id === 'groupChatForm' ? getActiveMentionGroup() : null;
+      const candidates = getMentionCandidates(query, group);
+      renderMentionDropdown(form, candidates);
+    }
+
+    function handleMentionKeydown(event) {
+      const textarea = event.currentTarget;
+      const form = textarea.closest('form');
+      const menu = form.querySelector('.mention-dropdown');
+      if (!menu || menu.classList.contains('hidden')) {
+        return;
+      }
+      if (event.key === 'ArrowDown') {
+        event.preventDefault();
+        updateMentionSelection(form, 1);
+      } else if (event.key === 'ArrowUp') {
+        event.preventDefault();
+        updateMentionSelection(form, -1);
+      } else if (event.key === 'Enter') {
+        if (mentionDropdownState.items.length) {
+          event.preventDefault();
+          const selected = mentionDropdownState.items[mentionDropdownState.selectedIndex];
+          if (selected) {
+            chooseMention(form, selected.username);
+          }
+        }
+      } else if (event.key === 'Escape') {
+        closeMentionDropdown(form);
+      }
+    }
+
+    function attachMentionInputListeners(form) {
+      if (!form || form.dataset.mentionEnhanced) {
+        return;
+      }
+      const textarea = form.querySelector('textarea.mention-input');
+      if (!textarea) {
+        return;
+      }
+      textarea.addEventListener('input', handleMentionInput);
+      textarea.addEventListener('keydown', handleMentionKeydown);
+      textarea.addEventListener('blur', () => {
+        setTimeout(() => closeMentionDropdown(form), 150);
+      });
+      form.dataset.mentionEnhanced = 'true';
+    }
+
+    function getActiveMentionGroup() {
+      const modal = document.querySelector('#groupModal');
+      const groupId = modal?.dataset.group;
+      if (!groupId) {
+        return null;
+      }
+      return getGroups().find(item => item.id === groupId) || null;
+    }
+
+    function notifyMentionTargets(sender, text, context = {}) {
+      const mentions = getMentions(text);
+      const preferences = getSettingPreferences();
+      if (!preferences.notification?.mentionAlerts) {
+        return;
+      }
+      mentions.forEach(name => {
+        if (name.toLowerCase() === 'everyone') {
+          if (context.group) {
+            context.group.members.filter(member => member !== sender.username).forEach(memberName => {
+              const target = getAccount(memberName);
+              if (target) {
+                addNotification(target, 'mention', `${sender.username} mentioned everyone in ${context.group.name}.`);
+              }
+            });
+          }
+          return;
+        }
+        const target = getAccount(name);
+        if (target && target.username !== sender.username) {
+          addNotification(target, 'mention', `${sender.username} mentioned you in ${context.room}.`);
+        }
+      });
+    }
+
+    function getMentions(text) {
+      const matches = Array.from(text.matchAll(/@([a-zA-Z0-9_]+)/g));
+      return matches.map(match => match[1]);
+    }
+
+    function renderWorldChat() {
+      const chatRoom = document.querySelector('#worldChatRoom');
+      if (!chatRoom) {
+        return;
+      }
+      const messages = getWorldChat().slice(-80);
+      chatRoom.innerHTML = messages.map(message => {
+        const time = formatShortTime(message.time);
+        const sender = getAccount(message.sender);
+        return `<div class="chat-message with-avatar">${avatarMarkup(sender, 'message-avatar')}<div class="bubble"><strong>${escapeHtml(message.sender)}</strong><br>${formatMentions(message.text)}</div><div class="meta">${time}</div></div>`;
+      }).join('');
+      chatRoom.scrollTop = chatRoom.scrollHeight;
     }
 
     function renderNotifications() {
@@ -1261,7 +1937,7 @@
         return;
       }
       const list = document.querySelector('#notificationsPanel');
-      const filtered = (user.notifications || []).filter(note => note.type === 'friend' || note.type === 'dm');
+      const filtered = (user.notifications || []).filter(note => note.type === 'friend' || note.type === 'dm' || note.type === 'mention');
       list.innerHTML = filtered.length ? filtered.map(note => `<li><strong>${escapeHtml(note.message)}</strong><br><span class="text-slate-400">${formatShortTime(note.time)}</span></li>`).join('') : '<li>No notifications yet.</li>';
     }
 
@@ -1275,11 +1951,16 @@
       friendsShell.innerHTML = user.friends.length ? user.friends.map(friendName => {
         const friend = getAccount(friendName);
         const online = friend ? getFriendStatus(friend.username) : false;
-        return `<li><span><span class="status-dot ${online ? 'online' : 'offline'}"></span>${friendName}</span><span><button class="btn btn-ghost" data-friend="${friendName}">Message</button></span></li>`;
+        return `<li><span><span class="status-dot ${online ? 'online' : 'offline'}"></span>${friendName}</span><span><button class="btn btn-ghost" data-friend="${friendName}">Message</button><button class="btn btn-ghost" data-view-profile="${friendName}">View</button></span></li>`;
       }).join('') : '<li>You have no friends yet.</li>';
 
       friendsShell.querySelectorAll('button').forEach(button => {
-        button.addEventListener('click', () => openDmThread(button.dataset.friend));
+        if (button.dataset.friend) {
+          button.addEventListener('click', () => openDmThread(button.dataset.friend));
+        }
+        if (button.dataset.viewProfile) {
+          button.addEventListener('click', () => showProfilePreview(button.dataset.viewProfile));
+        }
       });
 
       const incoming = user.pendingRequests.incoming || [];
@@ -1644,13 +2325,19 @@
                 <input type="file" id="groupAttachmentInput" class="hidden" accept="image/*,video/*,audio/*" multiple />
               </div>
               <div id="groupAttachmentPreview" class="attachment-preview"></div>
-              <textarea name="groupMessage" class="form-control" rows="3" placeholder="Send a message to the group..."></textarea>
+              <div class="mention-wrapper">
+                <textarea name="groupMessage" class="form-control mention-input" rows="3" placeholder="Send a message to the group..."></textarea>
+                <div class="mention-dropdown hidden" aria-live="polite"></div>
+              </div>
               <button type="submit" class="btn btn-accent">Send</button>
             </form>
           </div>
         </div>
       `;
       renderGroupMessages(group);
+      const groupChatForm = document.querySelector('#groupChatForm');
+      attachMentionInputListeners(groupChatForm);
+      document.querySelector('#groupModal').dataset.group = group.id;
       const groupMemberList = document.querySelector('#groupMemberList');
       const bannedList = document.querySelector('#groupBannedList');
       const addSelect = document.querySelector('#groupAddSelect');
@@ -1660,7 +2347,8 @@
         groupMemberList.innerHTML = group.members.map(memberName => {
           const member = getAccount(memberName);
           const memberIsAdmin = memberName === group.admin;
-          const buttonMarkup = isAdmin && memberName !== user.username ? `<span><button class="btn btn-danger" data-action="kick" data-user="${memberName}">Kick</button><button class="btn btn-warning" data-action="ban" data-user="${memberName}">Ban</button></span>` : ' ';
+          const viewButton = `<button class="btn btn-ghost" data-action="view" data-user="${memberName}">View</button>`;
+          const buttonMarkup = isAdmin && memberName !== user.username ? `<span><button class="btn btn-danger" data-action="kick" data-user="${memberName}">Kick</button><button class="btn btn-warning" data-action="ban" data-user="${memberName}">Ban</button>${viewButton}</span>` : `<span>${viewButton}</span>`;
           return `<li><span class="group-member-identity">${avatarMarkup(member, 'message-avatar')}<span>${escapeHtml(memberName)} ${memberIsAdmin ? '<span class="group-badge">Admin</span>' : ''}</span></span>${buttonMarkup}</li>`;
         }).join('');
         groupMemberList.querySelectorAll('button').forEach(button => {
@@ -1671,6 +2359,9 @@
             }
             if (button.dataset.action === 'ban') {
               removeGroupMemberFromGroup(group.id, memberName, true);
+            }
+            if (button.dataset.action === 'view') {
+              showProfilePreview(memberName);
             }
           });
         });
@@ -1708,8 +2399,8 @@
         });
       }
 
-      const groupChatForm = document.querySelector('#groupChatForm');
       if (groupChatForm) {
+        attachMentionInputListeners(groupChatForm);
         groupChatForm.addEventListener('submit', event => {
           event.preventDefault();
           const text = event.currentTarget.groupMessage.value.trim();
@@ -1718,6 +2409,7 @@
           }
           group.messages.push({ from: user.username, text, time: Date.now() });
           saveGroup(group);
+          notifyMentionTargets(user, text, { room: 'group chat', group });
           renderGroupMessages(group);
           event.currentTarget.reset();
         });
@@ -1777,7 +2469,7 @@
       chatRoom.innerHTML = group.messages.map(message => {
         const isMe = user && message.from === user.username;
         const sender = getAccount(message.from);
-        return `<div class="chat-message ${isMe ? 'from-me' : 'with-avatar'}">${isMe ? '' : avatarMarkup(sender, 'message-avatar')}<div class="bubble"><strong>${escapeHtml(message.from)}</strong><br>${escapeHtml(message.text)}</div><div class="meta">${formatShortTime(message.time)}</div></div>`;
+        return `<div class="chat-message ${isMe ? 'from-me' : 'with-avatar'}">${isMe ? '' : avatarMarkup(sender, 'message-avatar')}<div class="bubble"><strong>${escapeHtml(message.from)}</strong><br>${formatMentions(message.text)}</div><div class="meta">${formatShortTime(message.time)}</div></div>`;
       }).join('');
       chatRoom.scrollTop = chatRoom.scrollHeight;
     }
@@ -1801,6 +2493,7 @@
       }).join('');
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        CALL_STATE.stream = stream;
         const localCard = document.createElement('div');
         localCard.className = 'video-card';
         localCard.innerHTML = `<video autoplay playsinline muted></video><div><strong>Your camera</strong></div>`;
@@ -1814,13 +2507,286 @@
 
     function closeVideoRoom() {
       const overlay = document.querySelector('#videoOverlay');
-      const feeds = document.querySelector('#videoFeeds');
-      if (overlay) {
-        overlay.classList.remove('active');
+      if (!overlay) {
+        return;
       }
+      overlay.classList.remove('active');
+      if (CALL_STATE.stream) {
+        CALL_STATE.stream.getTracks().forEach(track => track.stop());
+        CALL_STATE.stream = null;
+      }
+      const feeds = document.querySelector('#videoFeeds');
       if (feeds) {
         feeds.innerHTML = '';
       }
+    }
+
+    const CALL_CHAT_STATE = {
+      view: 'world',
+      dmFriend: null,
+      groupId: null
+    };
+
+    function renderCallChatSelectors() {
+      const dmSelect = document.querySelector('#callDmSelect');
+      const groupSelect = document.querySelector('#callGroupSelect');
+      const user = getCurrentUser();
+      if (!user) {
+        return;
+      }
+      if (dmSelect) {
+        const friends = (user.friends || []).map(friendName => getAccount(friendName)).filter(Boolean);
+        dmSelect.innerHTML = friends.length ? `<option value="">Choose a friend</option>${friends.map(friend => `<option value="${escapeHtml(friend.username)}">${escapeHtml(friend.username)} ${escapeHtml(friend.usertag)}</option>`).join('')}` : '<option value="">No friends available</option>';
+        if (!CALL_CHAT_STATE.dmFriend || !friends.some(friend => friend.username === CALL_CHAT_STATE.dmFriend)) {
+          CALL_CHAT_STATE.dmFriend = friends[0]?.username || null;
+        }
+        if (CALL_CHAT_STATE.dmFriend) {
+          dmSelect.value = CALL_CHAT_STATE.dmFriend;
+        }
+      }
+      if (groupSelect) {
+        const groups = getGroups().filter(group => group.members.includes(user.username));
+        groupSelect.innerHTML = groups.length ? `<option value="">Choose a group</option>${groups.map(group => `<option value="${escapeHtml(group.id)}">${escapeHtml(group.name)}</option>`).join('')}` : '<option value="">No groups available</option>';
+        if (!CALL_CHAT_STATE.groupId || !groups.some(group => group.id === CALL_CHAT_STATE.groupId)) {
+          CALL_CHAT_STATE.groupId = groups[0]?.id || null;
+        }
+        if (CALL_CHAT_STATE.groupId) {
+          groupSelect.value = CALL_CHAT_STATE.groupId;
+        }
+      }
+    }
+
+    function setCallChatView(view) {
+      CALL_CHAT_STATE.view = view;
+      document.querySelectorAll('#callChatTabs button').forEach(button => {
+        button.classList.toggle('active', button.dataset.chatView === view);
+      });
+      const dmSelect = document.querySelector('#callDmSelect');
+      const groupSelect = document.querySelector('#callGroupSelect');
+      if (dmSelect) {
+        dmSelect.classList.toggle('hidden', view !== 'dm');
+      }
+      if (groupSelect) {
+        groupSelect.classList.toggle('hidden', view !== 'group');
+      }
+      if (view === 'dm' && !CALL_CHAT_STATE.dmFriend) {
+        renderCallChatSelectors();
+      }
+      if (view === 'group' && !CALL_CHAT_STATE.groupId) {
+        renderCallChatSelectors();
+      }
+      renderCallChatMessages();
+    }
+
+    function renderCallChatMessages() {
+      const room = document.querySelector('#callChatRoom');
+      if (!room) {
+        return;
+      }
+      const user = getCurrentUser();
+      if (!user) {
+        room.innerHTML = '<p class="text-slate-400">Sign in to use call chat.</p>';
+        return;
+      }
+      let html = '';
+      if (CALL_CHAT_STATE.view === 'world') {
+        const messages = getWorldChat().slice(-60);
+        html = messages.map(message => {
+          const sender = getAccount(message.sender);
+          return `<div class="chat-message with-avatar">${avatarMarkup(sender, 'message-avatar')}<div class="bubble"><strong>${escapeHtml(message.sender)}</strong><br>${formatMentions(message.text)}</div><div class="meta">${formatShortTime(message.time)}</div></div>`;
+        }).join('');
+      } else if (CALL_CHAT_STATE.view === 'dm') {
+        if (!CALL_CHAT_STATE.dmFriend) {
+          html = '<p class="text-slate-400">Select a friend to chat with.</p>';
+        } else {
+          const key = getDmThreadKey(user.username, CALL_CHAT_STATE.dmFriend);
+          const messages = getDmThreads()[key] || [];
+          if (!messages.length) {
+            html = '<p class="text-slate-400">Start a private chat while you call.</p>';
+          } else {
+            html = messages.map(message => {
+              const isMe = message.from === user.username;
+              const sender = isMe ? user : getAccount(message.from);
+              const avatar = isMe ? '' : avatarMarkup(sender, 'message-avatar');
+              return `<div class="chat-message ${isMe ? 'from-me' : 'with-avatar'}">${avatar}<div class="bubble"><strong>${escapeHtml(message.from)}</strong><br>${formatMentions(message.text)}</div><div class="meta">${formatShortTime(message.time)}</div></div>`;
+            }).join('');
+          }
+        }
+      } else if (CALL_CHAT_STATE.view === 'group') {
+        const group = getGroups().find(item => item.id === CALL_CHAT_STATE.groupId);
+        if (!group) {
+          html = '<p class="text-slate-400">Select a group to chat with.</p>';
+        } else if (!group.messages.length) {
+          html = '<p class="text-slate-400">Start a group conversation while you call.</p>';
+        } else {
+          html = group.messages.map(message => {
+            const isMe = message.from === user.username;
+            const sender = getAccount(message.from);
+            return `<div class="chat-message ${isMe ? 'from-me' : 'with-avatar'}">${isMe ? '' : avatarMarkup(sender, 'message-avatar')}<div class="bubble"><strong>${escapeHtml(message.from)}</strong><br>${formatMentions(message.text)}</div><div class="meta">${formatShortTime(message.time)}</div></div>`;
+          }).join('');
+        }
+      }
+      room.innerHTML = html || '<p class="text-slate-400">No messages available.</p>';
+      room.scrollTop = room.scrollHeight;
+    }
+
+    function handleCallChatSend() {
+      const form = document.querySelector('#callChatForm');
+      const textarea = form?.querySelector('textarea[name="message"]');
+      const user = getCurrentUser();
+      if (!form || !textarea || !user) {
+        return;
+      }
+      const text = textarea.value.trim();
+      if (!text) {
+        return;
+      }
+      if (CALL_CHAT_STATE.view === 'world') {
+        const messages = getWorldChat();
+        messages.push({ sender: user.username, text, time: Date.now() });
+        saveWorldChat(messages);
+        notifyMentionTargets(user, text, { room: 'world chat' });
+      } else if (CALL_CHAT_STATE.view === 'dm') {
+        if (!CALL_CHAT_STATE.dmFriend) {
+          return;
+        }
+        sendDirectMessage(CALL_CHAT_STATE.dmFriend, text);
+      } else if (CALL_CHAT_STATE.view === 'group') {
+        const group = getGroups().find(item => item.id === CALL_CHAT_STATE.groupId);
+        if (!group) {
+          return;
+        }
+        group.messages.push({ from: user.username, text, time: Date.now() });
+        saveGroup(group);
+        notifyMentionTargets(user, text, { room: 'group chat', group });
+      }
+      textarea.value = '';
+      renderCallChatMessages();
+      renderWorldChat();
+      renderDmThreads();
+      renderGroups();
+      renderNotifications();
+    }
+
+    function initializeCallChat() {
+      const form = document.querySelector('#callChatForm');
+      if (!form || form.dataset.callChatEnhanced) {
+        return;
+      }
+      const tabs = document.querySelectorAll('#callChatTabs button');
+      const dmSelect = document.querySelector('#callDmSelect');
+      const groupSelect = document.querySelector('#callGroupSelect');
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => setCallChatView(tab.dataset.chatView));
+      });
+      if (dmSelect) {
+        dmSelect.addEventListener('change', () => {
+          CALL_CHAT_STATE.dmFriend = dmSelect.value;
+          if (CALL_CHAT_STATE.view === 'dm') {
+            renderCallChatMessages();
+          }
+        });
+      }
+      if (groupSelect) {
+        groupSelect.addEventListener('change', () => {
+          CALL_CHAT_STATE.groupId = groupSelect.value;
+          if (CALL_CHAT_STATE.view === 'group') {
+            renderCallChatMessages();
+          }
+        });
+      }
+      form.addEventListener('submit', event => {
+        event.preventDefault();
+        handleCallChatSend();
+      });
+      const closePreview = document.querySelector('#closeProfilePreview');
+      if (closePreview) {
+        closePreview.addEventListener('click', closeProfilePreview);
+      }
+      const previewMessageBtn = document.querySelector('#previewMessageBtn');
+      if (previewMessageBtn) {
+        previewMessageBtn.addEventListener('click', () => {
+          const username = previewMessageBtn.dataset.username;
+          if (username) {
+            showProfilePreview(username);
+            openDmThread(username);
+            closeProfilePreview();
+          }
+        });
+      }
+      const previewFriendBtn = document.querySelector('#previewFriendBtn');
+      if (previewFriendBtn) {
+        previewFriendBtn.addEventListener('click', () => {
+          const username = previewFriendBtn.dataset.username;
+          if (username) {
+            sendFriendRequest(username);
+            closeProfilePreview();
+          }
+        });
+      }
+      renderCallChatSelectors();
+      setCallChatView(CALL_CHAT_STATE.view);
+      form.dataset.callChatEnhanced = 'true';
+    }
+
+    function showProfilePreview(username) {
+      const profile = getAccount(username);
+      const user = getCurrentUser();
+      if (!profile) {
+        return;
+      }
+      const previewAvatar = document.querySelector('#previewAvatar');
+      const previewName = document.querySelector('#previewName');
+      const previewTag = document.querySelector('#previewTag');
+      const previewEmail = document.querySelector('#previewEmail');
+      const previewBio = document.querySelector('#previewBio');
+      const previewLevel = document.querySelector('#previewLevel');
+      const previewXp = document.querySelector('#previewXp');
+      const previewMessageBtn = document.querySelector('#previewMessageBtn');
+      const previewFriendBtn = document.querySelector('#previewFriendBtn');
+      if (previewAvatar) {
+        buildAvatarElement(previewAvatar, profile);
+      }
+      if (previewName) {
+        previewName.textContent = profile.username;
+      }
+      if (previewTag) {
+        previewTag.textContent = profile.usertag;
+      }
+      if (previewEmail) {
+        previewEmail.textContent = profile.email;
+      }
+      if (previewBio) {
+        previewBio.textContent = profile.bio || 'This player has not added a bio yet.';
+      }
+      if (previewLevel) {
+        previewLevel.textContent = profile.level;
+      }
+      if (previewXp) {
+        previewXp.textContent = profile.xp;
+      }
+      if (previewMessageBtn) {
+        previewMessageBtn.dataset.username = profile.username;
+        previewMessageBtn.disabled = user?.username === profile.username;
+      }
+      if (previewFriendBtn) {
+        previewFriendBtn.dataset.username = profile.username;
+        if (user?.username === profile.username) {
+          previewFriendBtn.textContent = 'You';
+          previewFriendBtn.disabled = true;
+        } else if (user?.friends.includes(profile.username)) {
+          previewFriendBtn.textContent = 'Friends';
+          previewFriendBtn.disabled = true;
+        } else {
+          previewFriendBtn.textContent = 'Add Friend';
+          previewFriendBtn.disabled = false;
+        }
+      }
+      document.querySelector('#profilePreviewOverlay')?.classList.add('active');
+    }
+
+    function closeProfilePreview() {
+      document.querySelector('#profilePreviewOverlay')?.classList.remove('active');
     }
 
     function initForms() {
@@ -1952,6 +2918,7 @@
 
       const worldChatForm = document.querySelector('#worldChatForm');
       if (worldChatForm) {
+        attachMentionInputListeners(worldChatForm);
         worldChatForm.addEventListener('submit', event => {
           event.preventDefault();
           const user = getCurrentUser();
@@ -1965,6 +2932,7 @@
           const messages = getWorldChat();
           messages.push({ sender: user.username, text, time: Date.now() });
           saveWorldChat(messages);
+          notifyMentionTargets(user, text, { room: 'world chat' });
           addXp(user, Math.max(8, Math.min(28, Math.floor(text.length / 12) * 3 + 8)));
           worldChatForm.reset();
           renderWorldChat();
@@ -2019,6 +2987,7 @@
       if (closeVideoOverlay) {
         closeVideoOverlay.addEventListener('click', closeVideoRoom);
       }
+      initializeCallChat();
     }
 
     function initializePageAfterLogin() {
@@ -2077,7 +3046,6 @@
       startStatusTimer();
     });
   </script>
-  <script src="arashi-enhancements.js"></script>
-  <script src="arashi-enhancements.js"></script>
+  <!-- The settings hub, notification badges, calls, mentions, and replies are loaded once. -->
 </body>
 </html>
