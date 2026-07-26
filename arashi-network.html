@@ -1,0 +1,2083 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Arashi Gaming Network</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #04070f;
+      --panel: rgba(11, 16, 31, 0.94);
+      --panel-border: rgba(255, 255, 255, 0.12);
+      --text: #e5f4ff;
+      --muted: #8ba7d5;
+      --accent: #7f5dff;
+      --accent-2: #19c0ff;
+      --shadow: 0 30px 80px rgba(2, 13, 35, 0.55);
+      --success: #3dd597;
+      --warning: #ffb86c;
+      --danger: #ff5d84;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: radial-gradient(circle at top left, rgba(25, 133, 255, 0.12), transparent 20%),
+                  radial-gradient(circle at 80% 20%, rgba(160, 3, 165, 0.12), transparent 18%),
+                  linear-gradient(180deg, #060914 0%, #02040a 100%);
+      color: var(--text);
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    body::before,
+    body::after {
+      content: '';
+      position: fixed;
+      inset: -20%;
+      pointer-events: none;
+      z-index: -1;
+      filter: blur(85px);
+      opacity: 0.65;
+      animation: neonDrift 24s ease-in-out infinite alternate;
+    }
+
+    body::before {
+      background:
+        radial-gradient(circle at 20% 20%, rgba(127, 93, 255, 0.24), transparent 30%),
+        radial-gradient(circle at 80% 10%, rgba(25, 192, 255, 0.2), transparent 26%),
+        radial-gradient(circle at 70% 70%, rgba(255, 45, 175, 0.18), transparent 32%);
+    }
+
+    body::after {
+      background:
+        radial-gradient(circle at 30% 70%, rgba(0, 255, 255, 0.16), transparent 24%),
+        radial-gradient(circle at 90% 35%, rgba(255, 255, 255, 0.1), transparent 22%);
+      animation-direction: alternate-reverse;
+    }
+
+    @keyframes neonDrift {
+      0% { transform: translate3d(-1.2%, -0.8%, 0) scale(1); }
+      50% { transform: translate3d(1.8%, 1.4%, 0) scale(1.03); }
+      100% { transform: translate3d(-0.8%, 1.8%, 0) scale(1.02); }
+    }
+
+    a { color: var(--accent-2); text-decoration: none; }
+    a:hover { opacity: 0.92; }
+    button, .btn { border: none; cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease; }
+    button:hover, .btn:hover { transform: translateY(-1px); }
+
+    .page-shell {
+      position: relative;
+      z-index: 1;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .site-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      padding: 16px 0;
+    }
+
+    .brand {
+      font-size: 1.35rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.25em;
+      color: var(--accent-2);
+    }
+
+    .site-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .site-nav a,
+    .site-nav button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 18px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.75);
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+
+    .site-nav .btn-accent {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: white;
+    }
+
+    .site-nav .btn-ghost {
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .glass-panel {
+      background: var(--panel);
+      border: 1px solid var(--panel-border);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(22px);
+      border-radius: 32px;
+      padding: 28px;
+    }
+
+    .hero-panel {
+      display: grid;
+      gap: 28px;
+      grid-template-columns: 1.5fr 1fr;
+      align-items: center;
+    }
+
+    .hero-copy h1 { margin: 0; font-size: clamp(2.8rem, 4vw, 4.6rem); line-height: 1.02; }
+    .hero-copy p { color: var(--muted); max-width: 620px; line-height: 1.8; }
+    .hero-actions { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 24px; }
+
+    .btn { border-radius: 999px; font-weight: 700; letter-spacing: 0.03em; }
+    .btn-accent { background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: white; }
+    .btn-ghost { background: rgba(255, 255, 255, 0.06); color: var(--text); }
+
+    .neon-title { font-size: 0.95rem; margin-bottom: 18px; color: var(--accent-2); letter-spacing: 0.14em; text-transform: uppercase; }
+
+    .grid-2 { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid-4 { display: grid; gap: 18px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+    .form-group { margin-bottom: 18px; }
+    .form-group label { display: block; margin-bottom: 8px; color: var(--muted); font-size: 0.95rem; }
+    .form-control { width: 100%; padding: 14px 16px; border-radius: 18px; border: 1px solid rgba(255, 255, 255, 0.12); background: rgba(255, 255, 255, 0.04); color: var(--text); }
+    .form-control:focus { outline: none; border-color: rgba(25, 133, 255, 0.9); box-shadow: 0 0 0 4px rgba(25, 133, 255, 0.12); }
+
+    .auth-shell { display: flex; justify-content: center; padding: 24px; }
+    .auth-box { width: 100%; max-width: 520px; padding: 32px; border-radius: 32px; }
+    .auth-box h1 { margin: 0 0 12px; font-size: 2.2rem; }
+    .auth-footer { margin-top: 16px; color: var(--muted); }
+
+    .dashboard-shell { display: grid; gap: 24px; }
+    .dashboard-hero { display: flex; justify-content: space-between; gap: 22px; padding: 28px; align-items: center; }
+    .dashboard-hero h2 { margin: 0; font-size: 2.2rem; }
+    .avatar-circle { width: 134px; height: 134px; border-radius: 28px; border: 2px solid rgba(255, 255, 255, 0.16); display: flex; align-items: center; justify-content: center; font-size: 2.2rem; font-weight: 800; background: rgba(255, 255, 255, 0.06); color: white; text-transform: uppercase; }
+    .dashboard-badges { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+    .status-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 8px; }
+    .status-dot.online { background: var(--success); }
+    .status-dot.offline { background: rgba(255,255,255,0.18); }
+
+    .stats-grid { display: grid; gap: 24px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .glass-card { padding: 24px; background: rgba(255, 255, 255, 0.04); border-radius: 28px; border: 1px solid rgba(255,255,255,0.08); }
+    .glass-card h3 { margin-top: 0; }
+    .glass-card ul { margin: 0; padding-left: 20px; color: var(--muted); }
+    .glass-card li { margin-bottom: 12px; }
+
+    .friends-list,
+    .notifications-list,
+    .search-results,
+    .thread-list,
+    .activity-history {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: 12px;
+    }
+
+    .friends-list li,
+    .notifications-list li,
+    .search-results li,
+    .thread-list li,
+    .activity-history li,
+    .game-card,
+    .group-card {
+      padding: 18px;
+      border-radius: 22px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      display: grid;
+      gap: 10px;
+    }
+
+    .friends-list li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .friends-list li button,
+    .group-card button,
+    .game-card button {
+      min-width: 110px;
+      padding: 10px 16px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.08);
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .group-card-header,
+    .group-badge {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .group-card-header {
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .group-badge {
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(25, 133, 255, 0.14);
+      color: var(--accent-2);
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    .group-modal-grid {
+      display: grid;
+      gap: 20px;
+      grid-template-columns: 280px minmax(0, 1fr);
+    }
+
+    .group-sidebar {
+      display: grid;
+      gap: 18px;
+    }
+
+    .group-member-list,
+    .group-banned-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 10px;
+      max-height: 280px;
+      overflow-y: auto;
+    }
+
+    .group-member-list li,
+    .group-banned-list li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .group-member-identity { display: flex; align-items: center; gap: 10px; min-width: 0; }
+
+    .group-add-member {
+      display: grid;
+      gap: 12px;
+    }
+
+    .group-add-member select {
+      width: 100%;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      padding: 12px 14px;
+    }
+
+    .group-add-member button {
+      width: 100%;
+      padding: 12px 0;
+      border-radius: 18px;
+    }
+
+    .game-grid,
+    .group-grid,
+    .profile-shell,
+    .chat-grid,
+    .settings-grid {
+      display: grid;
+      gap: 18px;
+    }
+
+    .game-grid { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+    .group-grid { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+    .profile-shell { grid-template-columns: 1fr 1fr; }
+    .chat-grid { grid-template-columns: 320px minmax(0, 1fr); }
+    .settings-grid { grid-template-columns: 1fr 1fr; }
+
+    .profile-card { display: grid; gap: 18px; align-items: start; }
+    .profile-info h2 { margin: 0; }
+    .profile-info p { margin: 4px 0; color: var(--muted); }
+
+    .search-form { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 18px; }
+    .search-form input { flex: 1; }
+    .search-form button { width: auto; }
+
+    .chat-shell { display: grid; grid-template-rows: auto 1fr auto; height: calc(100vh - 240px); }
+    .chat-list { overflow-y: auto; padding-right: 4px; }
+    .chat-panel { display: grid; grid-template-rows: auto 1fr auto; gap: 16px; height: 100%; }
+    .chat-header { display: flex; justify-content: space-between; gap: 12px; align-items: center; }
+    .chat-room {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 24px;
+      padding: 18px;
+      overflow-y: auto;
+      min-height: 260px;
+      max-height: calc(100vh - 420px);
+    }
+
+    .chat-message { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+    .chat-message.from-me { align-items: flex-end; text-align: right; }
+    .chat-message.with-avatar { display: grid; grid-template-columns: 34px minmax(0, 1fr); column-gap: 10px; align-items: start; }
+    .chat-message.with-avatar .message-avatar { grid-row: span 2; }
+    .chat-message.with-avatar .bubble { max-width: 100%; }
+    .chat-message .meta { color: var(--muted); font-size: 0.9rem; }
+    .chat-message .bubble { display: inline-block; padding: 14px 18px; border-radius: 22px; background: rgba(255,255,255,0.06); max-width: 90%; white-space: pre-wrap; word-break: break-word; }
+    .chat-message.from-me .bubble { background: linear-gradient(135deg, rgba(127,93,255,0.18), rgba(25,192,255,0.14)); }
+    .chat-message .attachments { margin-top: 12px; display: grid; gap: 12px; }
+    .message-avatar,
+    .dm-avatar { flex: 0 0 auto; width: 34px; height: 34px; border-radius: 50%; object-fit: cover; background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: white; display: grid; place-items: center; font-size: 0.78rem; font-weight: 800; overflow: hidden; }
+    .dm-avatar { width: 42px; height: 42px; }
+    .dm-thread { width: 100%; display: grid; grid-template-columns: 42px minmax(0, 1fr); align-items: center; gap: 12px; padding: 10px; text-align: left; }
+    .dm-thread-copy { display: grid; gap: 3px; min-width: 0; }
+    .dm-thread-copy strong, .dm-thread-copy span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .dm-title { display: inline-flex; align-items: center; gap: 10px; }
+
+    .message-input { display: grid; gap: 12px; }
+    .message-input textarea { resize: vertical; min-height: 76px; }
+
+    .chat-toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+    .chat-toolbar button { padding: 10px 12px; border-radius: 18px; background: rgba(255,255,255,0.08); color: var(--text); }
+    .chat-toolbar .btn-accent { padding: 10px 16px; }
+    .attachment-preview { display: grid; gap: 12px; margin-top: 12px; }
+    .attachment-card { border-radius: 20px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.04); position: relative; }
+    .attachment-card img,
+    .attachment-card video,
+    .attachment-card audio { display: block; width: 100%; max-height: 260px; }
+    .attachment-card .attachment-label { padding: 10px 12px; display: flex; justify-content: space-between; align-items: center; gap: 10px; font-size: 0.95rem; color: var(--text); }
+    .attachment-card button { background: transparent; border: none; color: var(--danger); font-size: 0.95rem; cursor: pointer; }
+    .emoji-panel { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; padding: 12px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 18px; }
+    .emoji-panel button { font-size: 1.25rem; padding: 10px; border-radius: 14px; background: rgba(255,255,255,0.06); }
+    .emoji-panel button:hover { background: rgba(255,255,255,0.1); }
+
+    .video-layout { display: grid; grid-template-columns: 1.6fr 0.9fr; gap: 18px; align-items: start; }
+    .video-section { display: grid; gap: 16px; }
+    .participant-panel { display: grid; gap: 16px; }
+    .participant-card { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px; border-radius: 20px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); }
+    .participant-info { display: flex; align-items: center; gap: 12px; }
+    .participant-avatar { width: 48px; height: 48px; border-radius: 50%; background: rgba(255,255,255,0.08); display: grid; place-items: center; font-size: 1rem; color: var(--text); }
+    .participant-meta { display: grid; gap: 2px; }
+    .participant-meta strong { display: block; }
+    .status-small { width: 10px; height: 10px; border-radius: 50%; background: var(--success); margin-right: 6px; }
+    .call-controls { display: flex; gap: 12px; flex-wrap: wrap; }
+    .call-controls button { min-width: 140px; }
+    .call-status { display: flex; gap: 10px; align-items: center; color: var(--muted); }
+
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.72); display: none; justify-content: center; align-items: center; z-index: 50; padding: 24px; }
+    .modal-overlay.active { display: flex; }
+    .modal-box { width: min(980px,100%); max-height: calc(100vh - 80px); overflow-y: auto; background: rgba(6, 8, 18, 0.98); border: 1px solid rgba(255,255,255,0.12); border-radius: 32px; padding: 28px; position: relative; }
+    .modal-box h2 { margin-top: 0; }
+
+    .video-room { display: grid; gap: 16px; }
+    .video-grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+    .video-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; padding: 14px; min-height: 180px; display: grid; gap: 10px; }
+    .video-card video,
+    .video-card .placeholder { width: 100%; height: 180px; border-radius: 18px; background: rgba(255,255,255,0.04); object-fit: cover; }
+    .video-card .placeholder { display: flex; align-items: center; justify-content: center; color: var(--muted); font-size: 1rem; }
+
+    .video-controls { display: flex; gap: 12px; flex-wrap: wrap; }
+    .btn-danger { background: var(--danger); color: white; }
+    .btn-success { background: var(--success); color: white; }
+    .btn-warning { background: var(--warning); color: black; }
+
+    .hidden { display: none !important; }
+    .w-full { width: 100%; }
+    .text-slate-400 { color: var(--muted); }
+
+    @media (max-width: 1100px) { .hero-panel, .stats-grid, .profile-shell, .chat-grid, .settings-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 760px) { .site-header { flex-direction: column; align-items: flex-start; } .site-nav { width: 100%; justify-content: flex-start; } }
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+    <header class="site-header">
+      <div class="brand">Argo 2A Network</div>
+      <nav class="site-nav" id="mainNav">
+        <a href="#" data-section="homeSection">Home</a>
+        <a href="#" data-section="dashboardSection" class="nav-auth hidden">Dashboard</a>
+        <a href="#" data-section="worldChatSection" class="nav-auth hidden">World Chat</a>
+        <a href="#" data-section="messagesSection" class="nav-auth hidden">Messages</a>
+        <a href="#" data-section="friendsSection" class="nav-auth hidden">Friends</a>
+        <a href="#" data-section="groupsSection" class="nav-auth hidden">Groups</a>
+        <a href="#" data-section="librarySection" class="nav-auth hidden">Library</a>
+        <a href="#" data-section="profileSection" class="nav-auth hidden">Profile</a>
+        <a href="#" data-section="settingsSection" class="nav-auth hidden">Settings</a>
+        <a href="#" data-section="notificationsSection" class="nav-auth hidden">Notifications</a>
+        <a href="#" id="loginNav" data-section="loginSection" class="btn btn-accent">Login</a>
+        <a href="#" id="registerNav" data-section="registerSection" class="btn btn-ghost">Register</a>
+      </nav>
+    </header>
+
+    <main class="content-shell">
+      <section id="homeSection" class="glass-panel">
+        <div class="hero-panel">
+          <div class="hero-copy">
+            <p class="neon-title">Open world chat network</p>
+            <h1>Connect with players, manage friends, and game together in real time.</h1>
+            <p>Sign in to use world chat, direct messages, friend status, group rooms with video calling, game tracking, activity history, and a full profile hub.</p>
+            <div class="hero-actions">
+              <button class="btn btn-accent" data-section="loginSection">Login</button>
+              <button class="btn btn-ghost" data-section="registerSection">Register</button>
+            </div>
+          </div>
+          <div class="neon-card">
+            <div class="neon-title">Platform Highlights</div>
+            <div class="grid-2">
+              <div><strong>Open World Chat</strong><p>Everyone can talk and earn XP while chatting.</p></div>
+              <div><strong>Real Friend Status</strong><p>Friends show as online only when they are actively signed in.</p></div>
+              <div><strong>Private Messaging</strong><p>Direct messages keep conversations private between players.</p></div>
+              <div><strong>Video Group Rooms</strong><p>Create groups and join video calls, all from the browser.</p></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="loginSection" class="hidden">
+        <div class="auth-shell glass-panel">
+          <div class="auth-box">
+            <h1>Sign In</h1>
+            <p>Use your email or usertag to access the network.</p>
+            <form id="loginForm">
+              <div class="form-group">
+                <label>Email or UserTag</label>
+                <input type="text" name="identity" class="form-control" placeholder="you@example.com or Player#1234" required />
+              </div>
+              <div class="form-group">
+                <label>Password</label>
+                <input type="password" name="password" class="form-control" placeholder="••••••••" required />
+              </div>
+              <button type="submit" class="btn btn-accent w-full">Sign In</button>
+            </form>
+            <p class="auth-footer">New to Arashi? <a href="#" data-section="registerSection">Create account</a></p>
+          </div>
+        </div>
+      </section>
+
+      <section id="registerSection" class="hidden">
+        <div class="auth-shell glass-panel">
+          <div class="auth-box">
+            <h1>Create Account</h1>
+            <p>Register with your own email, username, password, and unique usertag.</p>
+            <form id="registerForm">
+              <div class="form-group">
+                <label>Username</label>
+                <input type="text" name="username" class="form-control" placeholder="GamerName" required />
+              </div>
+              <div class="form-group">
+                <label>UserTag</label>
+                <input type="text" name="usertag" class="form-control" placeholder="#1234" required />
+              </div>
+              <div class="form-group">
+                <label>Email</label>
+                <input type="email" name="email" class="form-control" placeholder="you@example.com" required />
+              </div>
+              <div class="form-group">
+                <label>Password</label>
+                <input type="password" name="password" class="form-control" placeholder="••••••••" required />
+              </div>
+              <div class="form-group">
+                <label>Confirm Password</label>
+                <input type="password" name="confirm_password" class="form-control" placeholder="••••••••" required />
+              </div>
+              <button type="submit" class="btn btn-accent w-full">Create Account</button>
+            </form>
+            <p class="auth-footer">Already have an account? <a href="#" data-section="loginSection">Login</a></p>
+          </div>
+        </div>
+      </section>
+
+      <section id="dashboardSection" class="hidden dashboard-shell">
+        <section class="dashboard-hero glass-panel">
+          <div>
+            <h2>Welcome back, <span id="dashboardName">Player</span>.</h2>
+            <p>Level <strong id="dashLevel">1</strong> • XP <strong id="dashXp">0</strong> • UserTag <strong id="dashTag">#0000</strong></p>
+            <div class="dashboard-badges" id="dashBadges"></div>
+            <p style="margin-top: 12px; color: var(--muted);">Currently playing: <strong id="dashCurrentGame">None</strong> • Duration: <strong id="dashGameTime">00:00:00</strong></p>
+          </div>
+          <div class="dashboard-avatar" aria-hidden="true">
+            <div class="avatar-circle" id="dashboardAvatar">P</div>
+          </div>
+        </section>
+
+        <section class="stats-grid">
+          <article class="glass-card neon-card">
+            <h3>Live World Chat</h3>
+            <p>Jump into the open-world channel and earn XP for every message you send.</p>
+            <p class="text-slate-400">World chat is visible to all signed-in visitors.</p>
+          </article>
+          <article class="glass-card neon-card">
+            <h3>Friends Online</h3>
+            <ul class="friends-list" id="dashFriendStatus"></ul>
+          </article>
+          <article class="glass-card neon-card">
+            <h3>Recent Notifications</h3>
+            <ul class="notifications-list" id="dashNotifications"></ul>
+          </article>
+          <article class="glass-card neon-card">
+            <h3>Game Activity</h3>
+            <ul id="dashActivity" class="notifications-list"></ul>
+          </article>
+        </section>
+      </section>
+
+      <section id="worldChatSection" class="hidden glass-panel">
+        <div class="chat-shell">
+          <div class="chat-header">
+            <div>
+              <h2>World Chat</h2>
+              <p class="text-slate-400">Every registered player can chat here and gain XP for conversations.</p>
+            </div>
+            <span id="worldXpBadge" class="tag">+8 to +28 XP per message</span>
+          </div>
+          <div class="chat-room" id="worldChatRoom"></div>
+          <form id="worldChatForm" class="message-input">
+            <div class="chat-toolbar">
+              <button type="button" class="btn btn-ghost emoji-btn" data-target="worldChatForm" data-insert="😀">😀</button>
+              <button type="button" class="btn btn-ghost emoji-btn" data-target="worldChatForm" data-insert="🔥">🔥</button>
+              <button type="button" class="btn btn-ghost emoji-btn" data-target="worldChatForm" data-insert="👾">👾</button>
+              <button type="button" class="btn btn-ghost sticker-btn" data-target="worldChatForm" data-sticker="🛡️">Sticker</button>
+              <button type="button" class="btn btn-ghost gift-btn" data-target="worldChatForm" data-gift="🎁">Gift</button>
+              <button type="button" id="worldAttachBtn" class="btn btn-ghost attach-btn" data-target="worldChatForm">📎 Attach</button>
+              <input type="file" id="worldAttachmentInput" class="hidden" accept="image/*,video/*,audio/*" multiple />
+            </div>
+            <div id="worldAttachmentPreview" class="attachment-preview"></div>
+            <textarea name="message" class="form-control" placeholder="Type a message for the world..."></textarea>
+            <button type="submit" class="btn btn-accent">Send</button>
+          </form>
+        </div>
+      </section>
+
+      <section id="messagesSection" class="hidden glass-panel">
+        <div class="chat-grid">
+          <aside class="chat-shell chat-list">
+            <div class="chat-header"><h3>Direct Messages</h3></div>
+            <ul class="thread-list" id="dmThreadList"></ul>
+          </aside>
+          <div class="chat-shell chat-panel">
+            <div class="chat-header">
+              <h3 id="dmChatTitle">Select a friend</h3>
+              <button id="dmRefreshBtn" class="btn btn-ghost">Refresh</button>
+            </div>
+            <div class="chat-room" id="dmRoom"></div>
+            <form id="dmForm" class="message-input hidden">
+              <div class="chat-toolbar">
+                <button type="button" class="btn btn-ghost emoji-btn" data-target="dmForm" data-insert="😊">😊</button>
+                <button type="button" class="btn btn-ghost emoji-btn" data-target="dmForm" data-insert="❤️">❤️</button>
+                <button type="button" class="btn btn-ghost emoji-btn" data-target="dmForm" data-insert="🎮">🎮</button>
+                <button type="button" class="btn btn-ghost sticker-btn" data-target="dmForm" data-sticker="✨">Sticker</button>
+                <button type="button" class="btn btn-ghost gift-btn" data-target="dmForm" data-gift="🎁">Gift</button>
+                <button type="button" id="dmAttachBtn" class="btn btn-ghost attach-btn" data-target="dmForm">📎 Attach</button>
+                <input type="file" id="dmAttachmentInput" class="hidden" accept="image/*,video/*,audio/*" multiple />
+              </div>
+              <div id="dmAttachmentPreview" class="attachment-preview"></div>
+              <textarea name="dmMessage" class="form-control" placeholder="Send a private message..."></textarea>
+              <button type="submit" class="btn btn-accent">Send</button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <section id="friendsSection" class="hidden glass-panel">
+        <div class="profile-shell">
+          <div class="glass-card neon-card">
+            <h2>Friend List</h2>
+            <p class="text-slate-400">See which friends are online or offline, manage requests, and start private chats.</p>
+            <ul class="friends-list" id="friendsList"></ul>
+          </div>
+          <div class="glass-card neon-card">
+            <h2>Friend Requests</h2>
+            <p class="text-slate-400">Accept or decline requests from other players.</p>
+            <ul class="notifications-list" id="friendRequests"></ul>
+            <form id="friendSearchForm" class="search-form" style="margin-top: 18px;">
+              <input type="text" name="search" class="form-control" placeholder="Search players to add..." />
+              <button class="btn btn-accent">Search</button>
+            </form>
+            <ul class="search-results" id="friendSearchResults"></ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="groupsSection" class="hidden glass-panel">
+        <div class="grid-2">
+          <div class="glass-card neon-card">
+            <h2>Create Group Chat</h2>
+            <form id="groupCreateForm">
+              <div class="form-group">
+                <label>Group Name</label>
+                <input type="text" name="groupName" class="form-control" placeholder="Raid Crew" required />
+              </div>
+              <div class="form-group" id="groupMemberSelector"></div>
+              <button class="btn btn-accent" type="submit">Create Group</button>
+            </form>
+          </div>
+          <div class="glass-card neon-card">
+            <h2>Your Group Chats</h2>
+            <div class="group-grid" id="groupList"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="librarySection" class="hidden glass-panel">
+        <div class="glass-card neon-card">
+          <h2>Game Library</h2>
+          <p class="text-slate-400">Launch games, track session time, and view recent play history.</p>
+          <div class="game-grid" id="gameLibrary"></div>
+        </div>
+      </section>
+
+      <section id="profileSection" class="hidden glass-panel">
+        <div class="profile-shell">
+          <div class="profile-card neon-card">
+            <div class="avatar-circle" id="profileAvatar">P</div>
+            <div class="profile-info">
+              <h2 id="profileName">Player</h2>
+              <p id="profileTag">#0000</p>
+              <p id="profileEmail">email@example.com</p>
+              <p>Level <strong id="profileLevel">1</strong> • XP <strong id="profileXp">0</strong></p>
+              <p id="profileBio" class="text-slate-400">Your bio appears here.</p>
+            </div>
+          </div>
+          <div class="glass-card neon-card">
+            <h2>Update Profile</h2>
+            <form id="profileForm">
+              <div class="form-group">
+                <label>Username</label>
+                <input type="text" name="username" class="form-control" required />
+              </div>
+              <div class="form-group">
+                <label>UserTag</label>
+                <input type="text" name="usertag" class="form-control" required />
+              </div>
+              <div class="form-group">
+                <label>Email</label>
+                <input type="email" name="email" class="form-control" required />
+              </div>
+              <div class="form-group">
+                <label>Bio</label>
+                <textarea name="bio" class="form-control" rows="4" placeholder="Share a little about yourself"></textarea>
+              </div>
+              <div class="form-group">
+                <label>Avatar</label>
+                <input type="file" name="avatar" class="form-control" accept="image/*" />
+              </div>
+              <button type="submit" class="btn btn-accent w-full">Save Profile</button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <section id="settingsSection" class="hidden glass-panel">
+        <div class="settings-grid">
+          <div class="glass-card neon-card">
+            <h2>Activity History</h2>
+            <p class="text-slate-400">Track every game session and see how long you played.</p>
+            <ul class="activity-history" id="activityHistory"></ul>
+          </div>
+          <div class="glass-card neon-card">
+            <h2>Account Settings</h2>
+            <p class="text-slate-400">Your profile, privacy, and session details live here.</p>
+            <p><strong>Current user:</strong> <span id="settingsUser"></span></p>
+            <p><strong>Status:</strong> <span id="settingsStatus"></span></p>
+            <button id="logoutButtonSettings" class="btn btn-ghost" style="margin-top: 18px;">Logout</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="notificationsSection" class="hidden glass-panel">
+        <div class="glass-card neon-card">
+          <h2>Notifications</h2>
+          <p class="text-slate-400">Only friend adds and private message alerts appear here.</p>
+          <ul class="notifications-list" id="notificationsPanel"></ul>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal-overlay" id="groupModal">
+    <div class="modal-box">
+      <button id="closeGroupModal" class="btn btn-ghost" style="position:absolute;top:16px;right:16px;">Close</button>
+      <div id="groupModalContent"></div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="videoOverlay">
+    <div class="modal-box video-room">
+      <button id="closeVideoOverlay" class="btn btn-danger" style="position:absolute;top:16px;right:16px;">Leave Call</button>
+      <div class="video-controls">
+        <div>
+          <h2 id="videoRoomTitle">Video Room</h2>
+          <p class="text-slate-400" id="videoRoomStatus">Join your squad call with crystal-clear audio and live presence.</p>
+        </div>
+        <div class="call-controls">
+          <button id="muteVideoBtn" class="btn btn-ghost">Mute</button>
+          <button id="hideVideoBtn" class="btn btn-ghost">Hide Video</button>
+          <button id="shareScreenBtn" class="btn btn-ghost">Share</button>
+        </div>
+      </div>
+      <div class="video-layout">
+        <div class="video-grid" id="videoFeeds"></div>
+        <div class="participant-panel glass-card neon-card">
+          <h3>Participants</h3>
+          <div id="participantPanel"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE = {
+      accounts: 'ngp_accounts',
+      activeUser: 'ngp_active_user',
+      onlineState: 'ngp_online_status',
+      worldChat: 'ngp_world_chat',
+      dmThreads: 'ngp_dm_threads',
+      groups: 'ngp_group_chats'
+    };
+
+    const CHAT_ATTACHMENTS = {
+      worldChatForm: [],
+      dmForm: [],
+      groupChatForm: []
+    };
+
+    const CALL_STATE = {
+      stream: null,
+      muted: false,
+      hidden: false
+    };
+
+    const defaultAccounts = [
+      {
+        username: 'Nova',
+        usertag: '#0081',
+        email: 'nova@arcade.gg',
+        password: 'nova123',
+        xp: 980,
+        level: 12,
+        bio: 'Speed runner and leaderboard specialist.',
+        avatar: '',
+        friends: ['Zeta', 'Rift'],
+        pendingRequests: { incoming: [], outgoing: [] },
+        notifications: [],
+        library: [
+          { name: 'Neon Racer', played: 0 },
+          { name: 'Skyfall Arena', played: 0 },
+          { name: 'Cyber Chess', played: 0 }
+        ],
+        currentGame: '',
+        gameStart: null,
+        gameHistory: []
+      },
+      {
+        username: 'Zeta',
+        usertag: '#0918',
+        email: 'zeta@arcade.gg',
+        password: 'zeta123',
+        xp: 918,
+        level: 11,
+        bio: 'Tactician and group chat commander.',
+        avatar: '',
+        friends: ['Nova'],
+        pendingRequests: { incoming: [], outgoing: [] },
+        notifications: [],
+        library: [
+          { name: 'Neon Racer', played: 0 },
+          { name: 'Skyfall Arena', played: 0 },
+          { name: 'Cyber Chess', played: 0 }
+        ],
+        currentGame: '',
+        gameStart: null,
+        gameHistory: []
+      },
+      {
+        username: 'Rift',
+        usertag: '#0840',
+        email: 'rift@arcade.gg',
+        password: 'rift123',
+        xp: 840,
+        level: 10,
+        bio: 'Strategist, gamer, and matchmaker.',
+        avatar: '',
+        friends: ['Nova'],
+        pendingRequests: { incoming: [], outgoing: [] },
+        notifications: [],
+        library: [
+          { name: 'Neon Racer', played: 0 },
+          { name: 'Skyfall Arena', played: 0 }
+        ],
+        currentGame: '',
+        gameStart: null,
+        gameHistory: []
+      }
+    ];
+
+    function normalize(value) {
+      return String(value || '').trim().toLowerCase();
+    }
+
+    function loadAccounts() {
+      const raw = localStorage.getItem(STORAGE.accounts);
+      if (!raw) {
+        localStorage.setItem(STORAGE.accounts, JSON.stringify(defaultAccounts));
+        return defaultAccounts.slice();
+      }
+      try {
+        return JSON.parse(raw);
+      } catch (error) {
+        localStorage.setItem(STORAGE.accounts, JSON.stringify(defaultAccounts));
+        return defaultAccounts.slice();
+      }
+    }
+
+    function saveAccounts(accounts) {
+      localStorage.setItem(STORAGE.accounts, JSON.stringify(accounts));
+    }
+
+    function loadOnlineState() {
+      const raw = localStorage.getItem(STORAGE.onlineState);
+      try {
+        return raw ? JSON.parse(raw) : {};
+      } catch (error) {
+        return {};
+      }
+    }
+
+    function saveOnlineState(state) {
+      localStorage.setItem(STORAGE.onlineState, JSON.stringify(state));
+    }
+
+    function getActiveUsername() {
+      return sessionStorage.getItem(STORAGE.activeUser);
+    }
+
+    function setActiveUsername(username) {
+      sessionStorage.setItem(STORAGE.activeUser, username);
+    }
+
+    function clearActiveUser() {
+      sessionStorage.removeItem(STORAGE.activeUser);
+    }
+
+    function findAccountByIdentity(identity) {
+      const accounts = loadAccounts();
+      const normalized = normalize(identity);
+      return accounts.find(acc => normalize(acc.email) === normalized || normalize(acc.username) === normalized || normalize(acc.usertag) === normalized);
+    }
+
+    function getAccount(username) {
+      const accounts = loadAccounts();
+      return accounts.find(acc => acc.username === username);
+    }
+
+    function updateAccount(updated) {
+      const accounts = loadAccounts();
+      const next = accounts.map(acc => acc.username === updated.username ? updated : acc);
+      saveAccounts(next);
+    }
+
+    function setOnline(username, state) {
+      const online = loadOnlineState();
+      if (state) {
+        online[username] = Date.now();
+      } else {
+        delete online[username];
+      }
+      saveOnlineState(online);
+    }
+
+    function getFriendStatus(username) {
+      const online = loadOnlineState();
+      return Boolean(online[username]);
+    }
+
+    function getWorldChat() {
+      const raw = localStorage.getItem(STORAGE.worldChat);
+      try {
+        return raw ? JSON.parse(raw) : [];
+      } catch (error) {
+        return [];
+      }
+    }
+
+    function saveWorldChat(messages) {
+      localStorage.setItem(STORAGE.worldChat, JSON.stringify(messages));
+    }
+
+    function getDmThreads() {
+      const raw = localStorage.getItem(STORAGE.dmThreads);
+      try {
+        return raw ? JSON.parse(raw) : {};
+      } catch (error) {
+        return {};
+      }
+    }
+
+    function saveDmThreads(threads) {
+      localStorage.setItem(STORAGE.dmThreads, JSON.stringify(threads));
+    }
+
+    function getGroups() {
+      const raw = localStorage.getItem(STORAGE.groups);
+      try {
+        return raw ? JSON.parse(raw) : [];
+      } catch (error) {
+        return [];
+      }
+    }
+
+    function saveGroups(groups) {
+      localStorage.setItem(STORAGE.groups, JSON.stringify(groups));
+    }
+
+    function getCurrentUser() {
+      const username = getActiveUsername();
+      if (!username) {
+        return null;
+      }
+      return getAccount(username);
+    }
+
+    function addNotification(user, type, message) {
+      const updated = { ...user };
+      updated.notifications = updated.notifications || [];
+      updated.notifications.unshift({ type, message, time: Date.now() });
+      updateAccount(updated);
+      return updated;
+    }
+
+    function getLevelFromXp(xp) {
+      return Math.max(1, Math.floor(xp / 200) + 1);
+    }
+
+    function addXp(user, amount) {
+      const updated = { ...user };
+      updated.xp = (updated.xp || 0) + amount;
+      updated.level = getLevelFromXp(updated.xp);
+      updateAccount(updated);
+      return updated;
+    }
+
+    function formatDuration(seconds) {
+      const hrs = String(Math.floor(seconds / 3600)).padStart(2, '0');
+      const mins = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
+      const secs = String(seconds % 60).padStart(2, '0');
+      return `${hrs}:${mins}:${secs}`;
+    }
+
+    function formatShortTime(timestamp) {
+      const date = new Date(timestamp);
+      return date.toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    }
+
+    function updateNavbar(isLoggedIn) {
+      document.querySelectorAll('.nav-auth').forEach(el => el.classList.toggle('hidden', !isLoggedIn));
+      document.querySelector('#loginNav').classList.toggle('hidden', isLoggedIn);
+      document.querySelector('#registerNav').classList.toggle('hidden', isLoggedIn);
+    }
+
+    function showSection(sectionId) {
+      document.querySelectorAll('main > section').forEach(section => {
+        section.classList.toggle('hidden', section.id !== sectionId);
+      });
+      if (sectionId === 'homeSection') {
+        document.querySelector('#loginNav').classList.remove('hidden');
+        document.querySelector('#registerNav').classList.remove('hidden');
+      }
+    }
+
+    function setSection(sectionId) {
+      showSection(sectionId);
+      if (sectionId === 'dashboardSection') {
+        refreshDashboard();
+      }
+      if (sectionId === 'worldChatSection') {
+        renderWorldChat();
+      }
+      if (sectionId === 'messagesSection') {
+        renderDmThreads();
+      }
+      if (sectionId === 'friendsSection') {
+        renderFriends();
+      }
+      if (sectionId === 'groupsSection') {
+        renderGroups();
+      }
+      if (sectionId === 'librarySection') {
+        renderLibrary();
+      }
+      if (sectionId === 'profileSection') {
+        renderProfile();
+      }
+      if (sectionId === 'settingsSection') {
+        renderSettings();
+      }
+      if (sectionId === 'notificationsSection') {
+        renderNotifications();
+      }
+    }
+
+    function initNavLinks() {
+      document.querySelectorAll('[data-section]').forEach(link => {
+        link.addEventListener('click', event => {
+          event.preventDefault();
+          const section = event.currentTarget.dataset.section;
+          setSection(section);
+        });
+      });
+      const logoutBtn = document.querySelector('#logoutButtonSettings');
+      if (logoutBtn) {
+        logoutBtn.addEventListener('click', event => {
+          event.preventDefault();
+          const user = getCurrentUser();
+          if (user) {
+            setOnline(user.username, false);
+          }
+          clearActiveUser();
+          updateNavbar(false);
+          showSection('loginSection');
+        });
+      }
+    }
+
+    function initializeStorage() {
+      loadAccounts();
+      if (!localStorage.getItem(STORAGE.worldChat)) {
+        saveWorldChat([
+          { sender: 'Nova', text: 'Welcome to the world chat — earn XP while you talk!', time: Date.now() - 60000 },
+          { sender: 'Zeta', text: 'Invite your friends and join a group room.', time: Date.now() - 30000 }
+        ]);
+      }
+      if (!localStorage.getItem(STORAGE.dmThreads)) {
+        saveDmThreads({});
+      }
+      if (!localStorage.getItem(STORAGE.groups)) {
+        saveGroups([]);
+      }
+      if (!localStorage.getItem(STORAGE.onlineState)) {
+        saveOnlineState({});
+      }
+    }
+
+    function buildAvatarElement(element, user) {
+      if (!element || !user) {
+        return;
+      }
+      if (user.avatar) {
+        element.style.backgroundImage = `url('${user.avatar}')`;
+        element.style.backgroundSize = 'cover';
+        element.style.backgroundPosition = 'center';
+        element.textContent = '';
+      } else {
+        element.style.backgroundImage = '';
+        element.textContent = user.username ? user.username.charAt(0).toUpperCase() : '';
+      }
+    }
+
+    function avatarMarkup(account, className = 'message-avatar') {
+      const initial = escapeHtml(account?.username?.charAt(0).toUpperCase() || '?');
+      if (account?.avatar) {
+        return `<img class="${className}" src="${escapeHtml(account.avatar)}" alt="${escapeHtml(account.username)}'s profile picture" />`;
+      }
+      return `<span class="${className}" aria-label="${escapeHtml(account?.username || 'Player')}">${initial}</span>`;
+    }
+
+    function refreshDashboard() {
+      const user = getCurrentUser();
+      if (!user) {
+        return;
+      }
+
+      document.querySelector('#dashboardName').textContent = user.username;
+      document.querySelector('#dashTag').textContent = user.usertag;
+      document.querySelector('#dashXp').textContent = user.xp;
+      document.querySelector('#dashLevel').textContent = user.level;
+      document.querySelector('#dashCurrentGame').textContent = user.currentGame || 'None';
+      document.querySelector('#dashGameTime').textContent = getCurrentGameDuration(user);
+      document.querySelector('#dashBadges').innerHTML = [
+        `Level ${user.level}`,
+        `${user.xp} XP`,
+        `${user.friends.length} friends`
+      ].map(text => `<span class="tag">${text}</span>`).join('');
+
+      const friendStatusShell = document.querySelector('#dashFriendStatus');
+      const friendStatuses = user.friends.map(friendName => {
+        const friend = getAccount(friendName);
+        const online = friend ? getFriendStatus(friend.username) : false;
+        return `<li><span><span class="status-dot ${online ? 'online' : 'offline'}"></span>${friendName}</span><span>${online ? 'Online' : 'Offline'}</span></li>`;
+      });
+      friendStatusShell.innerHTML = friendStatuses.length ? friendStatuses.join('') : '<li>No friends yet.</li>';
+
+      const notifShell = document.querySelector('#dashNotifications');
+      const activeNotifications = (user.notifications || []).filter(note => note.type === 'friend' || note.type === 'dm');
+      notifShell.innerHTML = activeNotifications.length ? activeNotifications.slice(0, 5).map(note => `<li>${escapeHtml(note.message)}</li>`).join('') : '<li>No notifications yet.</li>';
+
+      const activityShell = document.querySelector('#dashActivity');
+      const history = (user.gameHistory || []).slice(0, 3);
+      activityShell.innerHTML = history.length ? history.map(entry => `<li><strong>${entry.game}</strong> • ${formatShortTime(entry.started)} • ${formatDuration(entry.duration)}</li>`).join('') : '<li>No recent game sessions.</li>';
+
+      buildAvatarElement(document.querySelector('#dashboardAvatar'), user);
+    }
+
+    function renderWorldChat() {
+      const chatRoom = document.querySelector('#worldChatRoom');
+      if (!chatRoom) {
+        return;
+      }
+      const messages = getWorldChat().slice(-80);
+      chatRoom.innerHTML = messages.map(message => {
+        const time = formatShortTime(message.time);
+        const sender = getAccount(message.sender);
+        return `<div class="chat-message with-avatar">${avatarMarkup(sender, 'message-avatar')}<div class="bubble"><strong>${escapeHtml(message.sender)}</strong><br>${escapeHtml(message.text)}</div><div class="meta">${time}</div></div>`;
+      }).join('');
+      chatRoom.scrollTop = chatRoom.scrollHeight;
+    }
+
+    function escapeHtml(text) {
+      return String(text || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function getCurrentGameDuration(user) {
+      if (!user || !user.currentGame || !user.gameStart) {
+        return '00:00:00';
+      }
+      const seconds = Math.floor((Date.now() - user.gameStart) / 1000);
+      return formatDuration(seconds);
+    }
+
+    function renderLibrary() {
+      const user = getCurrentUser();
+      const libraryShell = document.querySelector('#gameLibrary');
+      if (!libraryShell || !user) {
+        return;
+      }
+      libraryShell.innerHTML = (user.library || []).map(game => {
+        const isPlaying = user.currentGame === game.name;
+        const buttonText = isPlaying ? 'Stop' : 'Play';
+        return `<div class="game-card"><strong>${game.name}</strong><p class="text-slate-400">Played ${formatDuration(game.played || 0)}</p><button data-game="${game.name}">${buttonText}</button></div>`;
+      }).join('');
+      libraryShell.querySelectorAll('button').forEach(button => {
+        button.addEventListener('click', () => handleGameToggle(button.dataset.game));
+      });
+    }
+
+    function handleGameToggle(gameName) {
+      const user = getCurrentUser();
+      if (!user) {
+        return;
+      }
+      const updated = { ...user };
+      if (updated.currentGame === gameName) {
+        addGameSession(updated);
+        updated.currentGame = '';
+        updated.gameStart = null;
+      } else {
+        if (updated.currentGame) {
+          addGameSession(updated);
+        }
+        updated.currentGame = gameName;
+        updated.gameStart = Date.now();
+      }
+      updateAccount(updated);
+      refreshDashboard();
+      renderLibrary();
+      renderSettings();
+    }
+
+    function addGameSession(user) {
+      if (!user.currentGame || !user.gameStart) {
+        return;
+      }
+      const duration = Math.max(0, Math.floor((Date.now() - user.gameStart) / 1000));
+      const record = { game: user.currentGame, started: user.gameStart, ended: Date.now(), duration };
+      const updated = { ...user };
+      updated.gameHistory = [record].concat(updated.gameHistory || []).slice(0, 30);
+      updated.library = (updated.library || []).map(game => {
+        if (game.name === user.currentGame) {
+          return { ...game, played: (game.played || 0) + duration };
+        }
+        return game;
+      });
+      updateAccount(updated);
+    }
+
+    function renderProfile() {
+      const user = getCurrentUser();
+      if (!user) {
+        return;
+      }
+      document.querySelector('#profileName').textContent = user.username;
+      document.querySelector('#profileTag').textContent = user.usertag;
+      document.querySelector('#profileEmail').textContent = user.email;
+      document.querySelector('#profileLevel').textContent = user.level;
+      document.querySelector('#profileXp').textContent = user.xp;
+      document.querySelector('#profileBio').textContent = user.bio || 'Your bio appears here.';
+      buildAvatarElement(document.querySelector('#profileAvatar'), user);
+      const profileForm = document.querySelector('#profileForm');
+      if (profileForm) {
+        profileForm.username.value = user.username;
+        profileForm.usertag.value = user.usertag;
+        profileForm.email.value = user.email;
+        profileForm.bio.value = user.bio || '';
+      }
+    }
+
+    function renderSettings() {
+      const user = getCurrentUser();
+      if (!user) {
+        return;
+      }
+      document.querySelector('#settingsUser').textContent = `${user.username} ${user.usertag}`;
+      document.querySelector('#settingsStatus').textContent = getFriendStatus(user.username) ? 'Online' : 'Offline';
+      const activityShell = document.querySelector('#activityHistory');
+      const sessions = user.gameHistory || [];
+      activityShell.innerHTML = sessions.length ? sessions.map(item => `<li><strong>${item.game}</strong><br><span class="text-slate-400">${formatShortTime(item.started)} • ${formatDuration(item.duration)}</span></li>`).join('') : '<li>No activity history available.</li>';
+    }
+
+    function renderNotifications() {
+      const user = getCurrentUser();
+      if (!user) {
+        return;
+      }
+      const list = document.querySelector('#notificationsPanel');
+      const filtered = (user.notifications || []).filter(note => note.type === 'friend' || note.type === 'dm');
+      list.innerHTML = filtered.length ? filtered.map(note => `<li><strong>${escapeHtml(note.message)}</strong><br><span class="text-slate-400">${formatShortTime(note.time)}</span></li>`).join('') : '<li>No notifications yet.</li>';
+    }
+
+    function renderFriends() {
+      const user = getCurrentUser();
+      if (!user) {
+        return;
+      }
+      const friendsShell = document.querySelector('#friendsList');
+      const activeRequestsShell = document.querySelector('#friendRequests');
+      friendsShell.innerHTML = user.friends.length ? user.friends.map(friendName => {
+        const friend = getAccount(friendName);
+        const online = friend ? getFriendStatus(friend.username) : false;
+        return `<li><span><span class="status-dot ${online ? 'online' : 'offline'}"></span>${friendName}</span><span><button class="btn btn-ghost" data-friend="${friendName}">Message</button></span></li>`;
+      }).join('') : '<li>You have no friends yet.</li>';
+
+      friendsShell.querySelectorAll('button').forEach(button => {
+        button.addEventListener('click', () => openDmThread(button.dataset.friend));
+      });
+
+      const incoming = user.pendingRequests.incoming || [];
+      activeRequestsShell.innerHTML = incoming.length ? incoming.map(requester => {
+        return `<li><div><strong>${requester}</strong> wants to be your friend.</div><div style="display:flex;gap:10px;"><button class="btn btn-success" data-action="accept" data-user="${requester}">Accept</button><button class="btn btn-danger" data-action="decline" data-user="${requester}">Decline</button></div></li>`;
+      }).join('') : '<li>No friend requests.</li>';
+
+      activeRequestsShell.querySelectorAll('button').forEach(button => {
+        button.addEventListener('click', () => handleFriendRequest(button.dataset.user, button.dataset.action));
+      });
+    }
+
+    function handleFriendRequest(requesterName, action) {
+      const user = getCurrentUser();
+      if (!user) {
+        return;
+      }
+      const requester = getAccount(requesterName);
+      if (!requester) {
+        return;
+      }
+      const updated = { ...user };
+      updated.pendingRequests.incoming = (updated.pendingRequests.incoming || []).filter(name => name !== requesterName);
+      if (action === 'accept') {
+        if (!updated.friends.includes(requesterName)) {
+          updated.friends.push(requesterName);
+        }
+        const requesterUpdated = { ...requester };
+        if (!requesterUpdated.friends.includes(updated.username)) {
+          requesterUpdated.friends.push(updated.username);
+        }
+        requesterUpdated.pendingRequests.outgoing = (requesterUpdated.pendingRequests.outgoing || []).filter(name => name !== updated.username);
+        updateAccount(requesterUpdated);
+        addNotification(updated, 'friend', `${requesterName} is now your friend.`);
+        addNotification(requesterUpdated, 'friend', `${updated.username} accepted your friend request.`);
+      } else {
+        const requesterUpdated = { ...requester };
+        requesterUpdated.pendingRequests.outgoing = (requesterUpdated.pendingRequests.outgoing || []).filter(name => name !== updated.username);
+        updateAccount(requesterUpdated);
+      }
+      updateAccount(updated);
+      renderFriends();
+      renderNotifications();
+      refreshDashboard();
+    }
+
+    function renderSearchResults(query) {
+      const resultsShell = document.querySelector('#friendSearchResults');
+      const user = getCurrentUser();
+      if (!resultsShell || !user) {
+        return;
+      }
+      const normalized = normalize(query);
+      const accounts = loadAccounts().filter(account => normalize(account.username).includes(normalized) && account.username !== user.username);
+      resultsShell.innerHTML = accounts.length ? accounts.map(account => {
+        const alreadyFriend = user.friends.includes(account.username);
+        const pendingIncoming = (user.pendingRequests.incoming || []).includes(account.username);
+        const pendingOutgoing = (user.pendingRequests.outgoing || []).includes(account.username);
+        const buttonLabel = alreadyFriend ? 'Friend' : pendingOutgoing ? 'Requested' : pendingIncoming ? 'Respond' : 'Add Friend';
+        const disabled = alreadyFriend ? 'disabled' : '';
+        return `<li><div><strong>${account.username} ${account.usertag}</strong><p class="text-slate-400">${account.bio || 'No bio yet.'}</p></div><button class="btn btn-ghost" data-target="${account.username}" ${disabled}>${buttonLabel}</button></li>`;
+      }).join('') : '<li>No players found.</li>';
+      resultsShell.querySelectorAll('button').forEach(button => {
+        if (button.disabled) {
+          return;
+        }
+        button.addEventListener('click', () => sendFriendRequest(button.dataset.target));
+      });
+    }
+
+    function sendFriendRequest(targetName) {
+      const user = getCurrentUser();
+      if (!user) {
+        return;
+      }
+      const target = getAccount(targetName);
+      if (!target) {
+        return;
+      }
+      const updated = { ...user };
+      if (!updated.pendingRequests.outgoing.includes(targetName) && !updated.friends.includes(targetName)) {
+        updated.pendingRequests.outgoing.push(targetName);
+      }
+      const targetUpdated = { ...target };
+      if (!targetUpdated.pendingRequests.incoming.includes(user.username) && !targetUpdated.friends.includes(user.username)) {
+        targetUpdated.pendingRequests.incoming.push(user.username);
+      }
+      updateAccount(updated);
+      updateAccount(targetUpdated);
+      addNotification(targetUpdated, 'friend', `${user.username} sent you a friend request.`);
+      renderFriends();
+      renderSearchResults(document.querySelector('#friendSearchForm input').value || '');
+      renderNotifications();
+    }
+
+    function openDmThread(friendName) {
+      const user = getCurrentUser();
+      if (!user) {
+        return;
+      }
+      const friend = getAccount(friendName);
+      if (!friend) {
+        return;
+      }
+      // A friend-list button must navigate to the DM panel before selecting its thread.
+      setSection('messagesSection');
+      document.querySelector('#dmChatTitle').innerHTML = `<span class="dm-title">${avatarMarkup(friend, 'message-avatar')}<span>${escapeHtml(friend.username)} ${escapeHtml(friend.usertag)}</span></span>`;
+      const dmForm = document.querySelector('#dmForm');
+      dmForm.classList.remove('hidden');
+      dmForm.dataset.friend = friend.username;
+      renderDmMessages(friend.username);
+      renderDmThreads();
+      requestAnimationFrame(() => dmForm.querySelector('textarea')?.focus());
+    }
+
+    function getDmThreadKey(userA, userB) {
+      return [userA, userB].sort().join(':::');
+    }
+
+    function renderDmThreads() {
+      const user = getCurrentUser();
+      const threadShell = document.querySelector('#dmThreadList');
+      if (!user || !threadShell) {
+        return;
+      }
+      const threads = getDmThreads();
+      const friendThreads = user.friends.map(friendName => {
+        const friend = getAccount(friendName);
+        const key = getDmThreadKey(user.username, friendName);
+        const messages = threads[key] || [];
+        const last = messages.length ? messages[messages.length - 1] : null;
+        const preview = last ? `${last.from}: ${last.text.substring(0, 28)}` : 'Start a new conversation';
+        return `<li><button class="btn btn-ghost dm-thread" data-friend="${escapeHtml(friendName)}">${avatarMarkup(friend, 'dm-avatar')}<span class="dm-thread-copy"><strong>${escapeHtml(friendName)}</strong><span class="text-slate-400">${escapeHtml(preview)}</span></span></button></li>`;
+      });
+      threadShell.innerHTML = friendThreads.length ? friendThreads.join('') : '<li>No direct message threads yet.</li>';
+      threadShell.querySelectorAll('button').forEach(button => {
+        button.addEventListener('click', () => openDmThread(button.dataset.friend));
+      });
+    }
+
+    function renderDmMessages(friendName) {
+      const user = getCurrentUser();
+      if (!user) {
+        return;
+      }
+      const dmRoom = document.querySelector('#dmRoom');
+      if (!dmRoom) {
+        return;
+      }
+      const threads = getDmThreads();
+      const key = getDmThreadKey(user.username, friendName);
+      const messages = threads[key] || [];
+      dmRoom.innerHTML = messages.map(message => {
+        const isMe = message.from === user.username;
+        const sender = isMe ? user : getAccount(message.from);
+        const avatar = isMe ? '' : avatarMarkup(sender, 'message-avatar');
+        const voice = message.voiceData ? `<audio controls preload="metadata" style="display:block;max-width:260px;margin-top:8px" src="${message.voiceData}"></audio>` : '';
+        return `<div class="chat-message ${isMe ? 'from-me' : 'with-avatar'}">${avatar}<div class="bubble"><strong>${escapeHtml(message.from)}</strong>${message.text ? `<br>${escapeHtml(message.text)}` : ''}${voice}</div><div class="meta">${formatShortTime(message.time)}</div></div>`;
+      }).join('');
+      dmRoom.scrollTop = dmRoom.scrollHeight;
+    }
+
+    function sendDirectMessage(toUsername, text, voiceData = null) {
+      const user = getCurrentUser();
+      if (!user) {
+        return;
+      }
+      const friend = getAccount(toUsername);
+      if (!friend) {
+        return;
+      }
+      const threads = getDmThreads();
+      const threadKey = getDmThreadKey(user.username, friend.username);
+      const messages = threads[threadKey] || [];
+      messages.push({ from: user.username, to: friend.username, text, voiceData, time: Date.now() });
+      threads[threadKey] = messages;
+      saveDmThreads(threads);
+      addNotification(friend, 'dm', `${user.username} sent you a private message.`);
+      renderDmMessages(friend.username);
+      renderNotifications();
+      renderDmThreads();
+    }
+
+    function renderGroups() {
+      const user = getCurrentUser();
+      if (!user) {
+        return;
+      }
+      const selector = document.querySelector('#groupMemberSelector');
+      if (selector) {
+        selector.innerHTML = user.friends.length ? user.friends.map(friend => `<label style="display:block; margin-bottom:12px;"><input type="checkbox" name="members" value="${friend}" /> ${friend}</label>`).join('') : '<p class="text-slate-400">Add friends to groups once you have them.</p>';
+      }
+      const groupShell = document.querySelector('#groupList');
+      const groups = getGroups().filter(group => group.members.includes(user.username));
+      if (groupShell) {
+        groupShell.innerHTML = groups.length ? groups.map(group => {
+          const memberCount = group.members.length;
+          const isAdmin = group.admin === user.username;
+          return `<article class="group-card"><div class="group-card-header"><strong>${group.name}</strong><span class="group-badge">${isAdmin ? 'Admin' : 'Member'}</span></div><p class="text-slate-400">${memberCount} members · Owner: ${group.admin}</p><button data-action="chat" data-id="${group.id}">Open Chat</button><button data-action="video" data-id="${group.id}" class="btn btn-warning">Video Call</button></article>`;
+        }).join('') : '<div class="group-card"><p>No groups created yet.</p></div>';
+        groupShell.querySelectorAll('button').forEach(button => {
+          button.addEventListener('click', () => {
+            const groupId = button.dataset.id;
+            if (button.dataset.action === 'chat') {
+              openGroupChat(groupId);
+            }
+            if (button.dataset.action === 'video') {
+              openVideoRoom(groupId);
+            }
+          });
+        });
+      }
+    }
+
+    function createGroup(name, members) {
+      const user = getCurrentUser();
+      if (!user) {
+        return;
+      }
+      const groups = getGroups();
+      const group = {
+        id: `group_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+        name,
+        admin: user.username,
+        members: Array.from(new Set([user.username].concat(members))),
+        banned: [],
+        messages: [],
+        created: Date.now()
+      };
+      groups.unshift(group);
+      saveGroups(groups);
+      members.forEach(memberName => {
+        const member = getAccount(memberName);
+        if (member && member.username !== user.username) {
+          addNotification(member, 'friend', `${user.username} invited you to group "${name}".`);
+        }
+      });
+      renderGroups();
+    }
+
+    function isGroupAdmin(group, username) {
+      return group.admin === username;
+    }
+
+    function isGroupMember(group, username) {
+      return group.members.includes(username);
+    }
+
+    function getAvailableGroupAdds(group) {
+      const user = getCurrentUser();
+      if (!user) {
+        return [];
+      }
+      return loadAccounts().filter(account => account.username !== user.username && !group.members.includes(account.username) && !group.banned.includes(account.username));
+    }
+
+    function saveGroup(group) {
+      const groups = getGroups().map(existing => existing.id === group.id ? group : existing);
+      saveGroups(groups);
+      return group;
+    }
+
+    function addGroupMemberToGroup(groupId, username) {
+      const groups = getGroups();
+      const group = groups.find(item => item.id === groupId);
+      const user = getCurrentUser();
+      if (!group || !user || group.banned.includes(username) || group.members.includes(username)) {
+        return;
+      }
+      group.members.push(username);
+      saveGroup(group);
+      const target = getAccount(username);
+      if (target) {
+        addNotification(target, 'friend', `${user.username} added you to group "${group.name}".`);
+      }
+      renderGroups();
+      renderGroupModal(group);
+    }
+
+    function removeGroupMemberFromGroup(groupId, username, ban = false) {
+      const groups = getGroups();
+      const group = groups.find(item => item.id === groupId);
+      const user = getCurrentUser();
+      if (!group || !user || group.admin === username) {
+        return;
+      }
+      group.members = group.members.filter(member => member !== username);
+      if (ban && !group.banned.includes(username)) {
+        group.banned.push(username);
+      }
+      saveGroup(group);
+      const target = getAccount(username);
+      if (target) {
+        addNotification(target, 'friend', `${user.username} ${ban ? 'banned' : 'removed'} you from group "${group.name}".`);
+      }
+      renderGroups();
+      renderGroupModal(group);
+    }
+
+    function openGroupChat(groupId) {
+      const groups = getGroups();
+      const group = groups.find(item => item.id === groupId);
+      if (!group) {
+        return;
+      }
+      const content = document.querySelector('#groupModalContent');
+      if (!content) {
+        return;
+      }
+      renderGroupModal(group);
+      document.querySelector('#groupModal').classList.add('active');
+    }
+
+    function renderGroupModal(group) {
+      const user = getCurrentUser();
+      if (!user) {
+        return;
+      }
+      const isAdmin = isGroupAdmin(group, user.username);
+      const availableAdds = getAvailableGroupAdds(group);
+      const addOptions = availableAdds.length ? availableAdds.map(account => `<option value="${account.username}">${account.username} ${account.usertag}</option>`).join('') : '<option value="" disabled>No available players</option>';
+      const content = document.querySelector('#groupModalContent');
+      if (!content) {
+        return;
+      }
+      content.innerHTML = `
+        <div class="group-modal-grid">
+          <aside class="group-sidebar">
+            <div class="glass-card neon-card">
+              <div class="group-card-header"><h2>${group.name}</h2><span class="group-badge">${isAdmin ? 'Admin' : 'Member'}</span></div>
+              <p class="text-slate-400">Owner: ${group.admin}</p>
+              <p class="text-slate-400">${group.members.length} members · ${group.banned.length} banned</p>
+            </div>
+            <div class="glass-card neon-card">
+              <h3>Members</h3>
+              <ul class="group-member-list" id="groupMemberList"></ul>
+            </div>
+            <div class="glass-card neon-card">
+              <h3>Manage Group</h3>
+              <button id="groupActionBtn" class="btn ${isAdmin ? 'btn-danger' : 'btn-ghost'}">${isAdmin ? 'Delete Group' : 'Leave Group'}</button>
+              <p class="text-slate-400">${isAdmin ? 'Deleting the group removes it for all members.' : 'Leaving removes you from the group and closes the chat.'}</p>
+            </div>
+            <div class="glass-card neon-card">
+              <h3>Add Members</h3>
+              <div class="group-add-member">
+                <select id="groupAddSelect" class="form-control">${addOptions}</select>
+                <button id="groupAddMemberBtn" class="btn btn-accent">Add Member</button>
+              </div>
+              <p class="text-slate-400">Any group member can add new players, excluding banned users.</p>
+            </div>
+            ${isAdmin ? `<div class="glass-card neon-card"><h3>Banned Members</h3><ul class="group-banned-list" id="groupBannedList"></ul></div>` : ''}
+          </aside>
+          <div>
+            <div class="chat-room" id="groupChatRoom" style="margin-top:0; max-height:360px; overflow:auto;"></div>
+            <form id="groupChatForm" class="message-input" style="margin-top:18px;">
+              <div class="chat-toolbar">
+                <button type="button" class="btn btn-ghost emoji-btn" data-target="groupChatForm" data-insert="💬">💬</button>
+                <button type="button" class="btn btn-ghost emoji-btn" data-target="groupChatForm" data-insert="🎉">🎉</button>
+                <button type="button" class="btn btn-ghost sticker-btn" data-target="groupChatForm" data-sticker="🚀">Sticker</button>
+                <button type="button" class="btn btn-ghost gift-btn" data-target="groupChatForm" data-gift="🎁">Gift</button>
+                <button type="button" id="groupAttachBtn" class="btn btn-ghost attach-btn" data-target="groupChatForm">📎 Attach</button>
+                <input type="file" id="groupAttachmentInput" class="hidden" accept="image/*,video/*,audio/*" multiple />
+              </div>
+              <div id="groupAttachmentPreview" class="attachment-preview"></div>
+              <textarea name="groupMessage" class="form-control" rows="3" placeholder="Send a message to the group..."></textarea>
+              <button type="submit" class="btn btn-accent">Send</button>
+            </form>
+          </div>
+        </div>
+      `;
+      renderGroupMessages(group);
+      const groupMemberList = document.querySelector('#groupMemberList');
+      const bannedList = document.querySelector('#groupBannedList');
+      const addSelect = document.querySelector('#groupAddSelect');
+      const addBtn = document.querySelector('#groupAddMemberBtn');
+
+      if (groupMemberList) {
+        groupMemberList.innerHTML = group.members.map(memberName => {
+          const member = getAccount(memberName);
+          const memberIsAdmin = memberName === group.admin;
+          const buttonMarkup = isAdmin && memberName !== user.username ? `<span><button class="btn btn-danger" data-action="kick" data-user="${memberName}">Kick</button><button class="btn btn-warning" data-action="ban" data-user="${memberName}">Ban</button></span>` : ' ';
+          return `<li><span class="group-member-identity">${avatarMarkup(member, 'message-avatar')}<span>${escapeHtml(memberName)} ${memberIsAdmin ? '<span class="group-badge">Admin</span>' : ''}</span></span>${buttonMarkup}</li>`;
+        }).join('');
+        groupMemberList.querySelectorAll('button').forEach(button => {
+          button.addEventListener('click', () => {
+            const memberName = button.dataset.user;
+            if (button.dataset.action === 'kick') {
+              removeGroupMemberFromGroup(group.id, memberName, false);
+            }
+            if (button.dataset.action === 'ban') {
+              removeGroupMemberFromGroup(group.id, memberName, true);
+            }
+          });
+        });
+      }
+
+      if (bannedList) {
+        bannedList.innerHTML = group.banned.length ? group.banned.map(bannedName => `<li><span>${escapeHtml(bannedName)}</span><button class="btn btn-success" data-action="unban" data-user="${bannedName}">Unban</button></li>`).join('') : '<li class="text-slate-400">No banned members.</li>';
+        bannedList.querySelectorAll('button').forEach(button => {
+          button.addEventListener('click', () => {
+            const bannedName = button.dataset.user;
+            unbanGroupMember(group.id, bannedName);
+          });
+        });
+      }
+
+      if (addBtn && addSelect) {
+        addBtn.addEventListener('click', event => {
+          event.preventDefault();
+          const selected = addSelect.value;
+          if (selected) {
+            addGroupMemberToGroup(group.id, selected);
+          }
+        });
+      }
+
+      const actionBtn = document.querySelector('#groupActionBtn');
+      if (actionBtn) {
+        actionBtn.addEventListener('click', event => {
+          event.preventDefault();
+          if (isAdmin) {
+            deleteGroup(group.id);
+          } else {
+            leaveGroup(group.id);
+          }
+        });
+      }
+
+      const groupChatForm = document.querySelector('#groupChatForm');
+      if (groupChatForm) {
+        groupChatForm.addEventListener('submit', event => {
+          event.preventDefault();
+          const text = event.currentTarget.groupMessage.value.trim();
+          if (!text) {
+            return;
+          }
+          group.messages.push({ from: user.username, text, time: Date.now() });
+          saveGroup(group);
+          renderGroupMessages(group);
+          event.currentTarget.reset();
+        });
+      }
+    }
+
+    function leaveGroup(groupId) {
+      const user = getCurrentUser();
+      if (!user) {
+        return;
+      }
+      const groups = getGroups();
+      const group = groups.find(item => item.id === groupId);
+      if (!group || group.admin === user.username) {
+        return;
+      }
+      group.members = group.members.filter(member => member !== user.username);
+      saveGroup(group);
+      document.querySelector('#groupModal').classList.remove('active');
+      renderGroups();
+    }
+
+    function deleteGroup(groupId) {
+      const user = getCurrentUser();
+      if (!user) {
+        return;
+      }
+      const groups = getGroups();
+      const group = groups.find(item => item.id === groupId);
+      if (!group || group.admin !== user.username) {
+        return;
+      }
+      const remaining = groups.filter(item => item.id !== groupId);
+      saveGroups(remaining);
+      document.querySelector('#groupModal').classList.remove('active');
+      renderGroups();
+    }
+
+    function unbanGroupMember(groupId, username) {
+      const groups = getGroups();
+      const group = groups.find(item => item.id === groupId);
+      if (!group) {
+        return;
+      }
+      group.banned = group.banned.filter(member => member !== username);
+      saveGroup(group);
+      renderGroups();
+      renderGroupModal(group);
+    }
+
+    function renderGroupMessages(group) {
+      const chatRoom = document.querySelector('#groupChatRoom');
+      if (!chatRoom) {
+        return;
+      }
+      const user = getCurrentUser();
+      chatRoom.innerHTML = group.messages.map(message => {
+        const isMe = user && message.from === user.username;
+        const sender = getAccount(message.from);
+        return `<div class="chat-message ${isMe ? 'from-me' : 'with-avatar'}">${isMe ? '' : avatarMarkup(sender, 'message-avatar')}<div class="bubble"><strong>${escapeHtml(message.from)}</strong><br>${escapeHtml(message.text)}</div><div class="meta">${formatShortTime(message.time)}</div></div>`;
+      }).join('');
+      chatRoom.scrollTop = chatRoom.scrollHeight;
+    }
+
+    async function openVideoRoom(groupId) {
+      const groups = getGroups();
+      const group = groups.find(item => item.id === groupId);
+      if (!group) {
+        return;
+      }
+      const overlay = document.querySelector('#videoOverlay');
+      const feeds = document.querySelector('#videoFeeds');
+      const title = document.querySelector('#videoRoomTitle');
+      if (!overlay || !feeds || !title) {
+        return;
+      }
+      title.textContent = `Video Call — ${group.name}`;
+      overlay.classList.add('active');
+      feeds.innerHTML = group.members.map(member => {
+        return `<div class="video-card"><div class="placeholder">${member}</div><div><strong>${member}</strong></div></div>`;
+      }).join('');
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        const localCard = document.createElement('div');
+        localCard.className = 'video-card';
+        localCard.innerHTML = `<video autoplay playsinline muted></video><div><strong>Your camera</strong></div>`;
+        const video = localCard.querySelector('video');
+        video.srcObject = stream;
+        feeds.prepend(localCard);
+      } catch (error) {
+        console.warn('Camera access denied or unavailable.', error);
+      }
+    }
+
+    function closeVideoRoom() {
+      const overlay = document.querySelector('#videoOverlay');
+      const feeds = document.querySelector('#videoFeeds');
+      if (overlay) {
+        overlay.classList.remove('active');
+      }
+      if (feeds) {
+        feeds.innerHTML = '';
+      }
+    }
+
+    function initForms() {
+      const loginForm = document.querySelector('#loginForm');
+      if (loginForm) {
+        loginForm.addEventListener('submit', event => {
+          event.preventDefault();
+          const identity = loginForm.identity.value.trim();
+          const password = loginForm.password.value.trim();
+          const account = findAccountByIdentity(identity);
+          if (!account || account.password !== password) {
+            alert('Invalid login credentials.');
+            return;
+          }
+          setActiveUsername(account.username);
+          setOnline(account.username, true);
+          initializePageAfterLogin();
+          setSection('dashboardSection');
+        });
+      }
+
+      const registerForm = document.querySelector('#registerForm');
+      if (registerForm) {
+        registerForm.addEventListener('submit', event => {
+          event.preventDefault();
+          const username = registerForm.username.value.trim();
+          const usertag = registerForm.usertag.value.trim();
+          const email = registerForm.email.value.trim();
+          const password = registerForm.password.value.trim();
+          const confirm = registerForm.confirm_password.value.trim();
+          if (!username || !usertag || !email || !password || !confirm) {
+            alert('Please fill out all fields.');
+            return;
+          }
+          if (password !== confirm) {
+            alert('Passwords do not match.');
+            return;
+          }
+          const accounts = loadAccounts();
+          const existing = accounts.find(acc => normalize(acc.email) === normalize(email) || normalize(acc.username) === normalize(username) || normalize(acc.usertag) === normalize(usertag));
+          if (existing) {
+            alert('That email, username, or usertag is already taken.');
+            return;
+          }
+          const newUser = {
+            username,
+            usertag,
+            email,
+            password,
+            xp: 0,
+            level: 1,
+            bio: '',
+            avatar: '',
+            friends: [],
+            pendingRequests: { incoming: [], outgoing: [] },
+            notifications: [],
+            library: [
+              { name: 'Neon Racer', played: 0 },
+              { name: 'Skyfall Arena', played: 0 },
+              { name: 'Cyber Chess', played: 0 }
+            ],
+            currentGame: '',
+            gameStart: null,
+            gameHistory: []
+          };
+          accounts.push(newUser);
+          saveAccounts(accounts);
+          setActiveUsername(newUser.username);
+          setOnline(newUser.username, true);
+          initializePageAfterLogin();
+          setSection('dashboardSection');
+        });
+      }
+
+      const profileForm = document.querySelector('#profileForm');
+      if (profileForm) {
+        profileForm.addEventListener('submit', event => {
+          event.preventDefault();
+          const user = getCurrentUser();
+          if (!user) {
+            return;
+          }
+          const updated = { ...user };
+          const username = profileForm.username.value.trim();
+          const usertag = profileForm.usertag.value.trim();
+          const email = profileForm.email.value.trim();
+          const bio = profileForm.bio.value.trim();
+          if (!username || !usertag || !email) {
+            alert('Please complete your profile before saving.');
+            return;
+          }
+          const accounts = loadAccounts();
+          const duplicate = accounts.find(acc => acc.username !== user.username && (normalize(acc.username) === normalize(username) || normalize(acc.usertag) === normalize(usertag) || normalize(acc.email) === normalize(email)));
+          if (duplicate) {
+            alert('That username, usertag, or email is already in use.');
+            return;
+          }
+          updated.username = username;
+          updated.usertag = usertag;
+          updated.email = email;
+          updated.bio = bio;
+          const avatarFile = profileForm.avatar.files[0];
+          if (avatarFile) {
+            const reader = new FileReader();
+            reader.onload = () => {
+              updated.avatar = reader.result;
+              updateAccount(updated);
+              setActiveUsername(updated.username);
+              initializePageAfterLogin();
+              alert('Profile updated.');
+            };
+            reader.readAsDataURL(avatarFile);
+          } else {
+            updateAccount(updated);
+            setActiveUsername(updated.username);
+            initializePageAfterLogin();
+            alert('Profile updated.');
+          }
+        });
+      }
+
+      const friendSearchForm = document.querySelector('#friendSearchForm');
+      if (friendSearchForm) {
+        friendSearchForm.addEventListener('submit', event => {
+          event.preventDefault();
+          renderSearchResults(friendSearchForm.search.value.trim());
+        });
+      }
+
+      const worldChatForm = document.querySelector('#worldChatForm');
+      if (worldChatForm) {
+        worldChatForm.addEventListener('submit', event => {
+          event.preventDefault();
+          const user = getCurrentUser();
+          if (!user) {
+            return;
+          }
+          const text = worldChatForm.message.value.trim();
+          if (!text) {
+            return;
+          }
+          const messages = getWorldChat();
+          messages.push({ sender: user.username, text, time: Date.now() });
+          saveWorldChat(messages);
+          addXp(user, Math.max(8, Math.min(28, Math.floor(text.length / 12) * 3 + 8)));
+          worldChatForm.reset();
+          renderWorldChat();
+          refreshDashboard();
+          renderProfile();
+          renderLibrary();
+          renderNotifications();
+          renderSettings();
+        });
+      }
+
+      const dmForm = document.querySelector('#dmForm');
+      if (dmForm) {
+        dmForm.addEventListener('submit', event => {
+          event.preventDefault();
+          const toFriend = dmForm.dataset.friend;
+          const text = dmForm.dmMessage.value.trim();
+          const voiceData = window.__pendingDmVoiceMessage || null;
+          if (!toFriend || (!text && !voiceData)) {
+            return;
+          }
+          sendDirectMessage(toFriend, text, voiceData);
+          window.__pendingDmVoiceMessage = null;
+          dmForm.reset();
+        });
+      }
+
+      const groupCreateForm = document.querySelector('#groupCreateForm');
+      if (groupCreateForm) {
+        groupCreateForm.addEventListener('submit', event => {
+          event.preventDefault();
+          const name = groupCreateForm.groupName.value.trim();
+          const members = Array.from(groupCreateForm.querySelectorAll('[name="members"]:checked')).map(input => input.value);
+          if (!name) {
+            alert('Enter a group name.');
+            return;
+          }
+          createGroup(name, members);
+          groupCreateForm.reset();
+          renderGroups();
+        });
+      }
+
+      const closeGroupModal = document.querySelector('#closeGroupModal');
+      if (closeGroupModal) {
+        closeGroupModal.addEventListener('click', () => {
+          document.querySelector('#groupModal').classList.remove('active');
+        });
+      }
+
+      const closeVideoOverlay = document.querySelector('#closeVideoOverlay');
+      if (closeVideoOverlay) {
+        closeVideoOverlay.addEventListener('click', closeVideoRoom);
+      }
+    }
+
+    function initializePageAfterLogin() {
+      updateNavbar(true);
+      refreshDashboard();
+      renderWorldChat();
+      renderDmThreads();
+      renderFriends();
+      renderGroups();
+      renderLibrary();
+      renderProfile();
+      renderNotifications();
+      renderSettings();
+      document.querySelector('#worldXpBadge').textContent = '+8 to +28 XP per message';
+    }
+
+    function startStatusTimer() {
+      setInterval(() => {
+        const user = getCurrentUser();
+        if (user && user.currentGame && user.gameStart) {
+          document.querySelector('#dashGameTime').textContent = getCurrentGameDuration(user);
+        }
+      }, 1000);
+    }
+
+    function handleStorageUpdates(event) {
+      if ([STORAGE.worldChat, STORAGE.dmThreads, STORAGE.groups, STORAGE.accounts, STORAGE.onlineState].includes(event.key)) {
+        const visibleSection = document.querySelector('main > section:not(.hidden)');
+        if (visibleSection) {
+          setSection(visibleSection.id);
+        }
+      }
+    }
+
+    window.addEventListener('storage', handleStorageUpdates);
+    window.addEventListener('beforeunload', () => {
+      const user = getCurrentUser();
+      if (user) {
+        setOnline(user.username, false);
+      }
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      initializeStorage();
+      initNavLinks();
+      initForms();
+      const active = getCurrentUser();
+      if (active) {
+        setOnline(active.username, true);
+        initializePageAfterLogin();
+        setSection('dashboardSection');
+      } else {
+        updateNavbar(false);
+        showSection('homeSection');
+      }
+      startStatusTimer();
+    });
+  </script>
+  <script src="arashi-enhancements.js"></script>
+  <script src="arashi-enhancements.js"></script>
+</body>
+</html>
