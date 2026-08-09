@@ -862,88 +862,59 @@
     setTimeout(() => { t.className = ''; }, 4000);
   }
 
-  // ── CONTACT FORM & API INTEGRATION ──
-  // Note: Replace this URL with your actual backend API endpoint
-  const API_URL = 'https://your-database-api-url.com/messages';
+  // ── CONTACT FORM ──
+  const STORAGE_KEY = 'lighthouse-inbox-messages';
 
-  // Fetch messages from the cloud database
-  async function getStoredMessages() {
+  function getStoredMessages() {
     try {
-      const response = await fetch(API_URL);
-      if (!response.ok) throw new Error('Network response was not ok');
-      return await response.json();
+      return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
     } catch (error) {
-      console.error('Error fetching messages from database:', error);
-      return []; // Return empty array on failure
+      return [];
     }
   }
 
-  // Save a new message to the cloud database
-  async function saveMessageToDB(message) {
-    try {
-      await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(message)
-      });
-    } catch (error) {
-      console.error('Error saving message to database:', error);
-    }
+  function saveMessages(messages) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
   }
 
-  // Delete a message from the cloud database
-  async function deleteMessageFromDB(messageId) {
-    try {
-      await fetch(`${API_URL}/${messageId}`, {
-        method: 'DELETE'
-      });
-    } catch (error) {
-      console.error('Error deleting message:', error);
-    }
-  }
-
-  async function handleSubmit(e) {
+  function handleSubmit(e) {
     e.preventDefault();
     const name  = document.getElementById('nameInput').value.trim();
     const email = document.getElementById('emailInput').value.trim();
     const msg   = document.getElementById('msgInput').value.trim();
-    
-    if (!name || !email || !msg) { 
-        showToast('Please fill in all fields.', 'error'); 
-        return; 
-    }
-    
+    if (!name || !email || !msg) { showToast('Please fill in all fields.', 'error'); return; }
     const btn = document.getElementById('submitBtn');
     btn.textContent = 'Sending...';
     btn.disabled = true;
 
-    const newMessage = {
-      id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
-      name,
-      email,
-      message: msg,
-      createdAt: new Date().toISOString()
-    };
+    setTimeout(() => {
+      const messages = getStoredMessages();
+      const newMessage = {
+        id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+        name,
+        email,
+        message: msg,
+        createdAt: new Date().toISOString()
+      };
+      messages.push(newMessage);
+      saveMessages(messages);
 
-    // Save to remote database
-    await saveMessageToDB(newMessage);
-
-    btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Send Message';
-    btn.disabled = false;
-    document.getElementById('contactForm').reset();
-    showToast(`Thank you, ${name}! Your message has been sent.`, 'success');
-    
-    if (document.getElementById('adminModal').hidden === false) {
-      await renderInbox();
-    }
+      btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Send Message';
+      btn.disabled = false;
+      document.getElementById('contactForm').reset();
+      showToast(`Thank you, ${name}! Your message has been sent.`, 'success');
+      if (document.getElementById('adminModal').hidden === false) {
+        renderInbox();
+      }
+    }, 1200);
   }
 
   // ── ADMIN MAILBOX ──
-  async function openAdminPanel() {
+  function openAdminPanel() {
     const modal = document.getElementById('adminModal');
     modal.hidden = false;
     document.body.classList.add('modal-open');
-    await renderInbox();
+    renderInbox();
   }
 
   function closeAdminPanel() {
@@ -953,9 +924,8 @@
   }
 
   let selectedMessageId = null;
-  let currentMessages = []; // Hold messages in memory for UI rendering
 
-  async function renderInbox() {
+  function renderInbox() {
     const inboxView = document.getElementById('inboxView');
     const authView  = document.getElementById('authView');
     const isLoggedIn = sessionStorage.getItem('lighthouse-admin-auth') === 'true';
@@ -968,19 +938,19 @@
       return;
     }
 
-    // Fetch live data from the database
-    currentMessages = await getStoredMessages();
-    currentMessages.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+    const messages = getStoredMessages()
+      .slice()
+      .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
 
     const list = document.getElementById('messageList');
-    if (!currentMessages.length) {
+    if (!messages.length) {
       list.innerHTML = '<p style="color: #a0aec0; text-align: center; padding: 1rem;">No messages yet.</p>';
       document.getElementById('messageDetail').innerHTML = '<p>No messages</p>';
       document.getElementById('messageDetail').classList.add('empty');
       return;
     }
 
-    list.innerHTML = currentMessages.map((message, index) => `
+    list.innerHTML = messages.map((message, index) => `
       <div class="message-item" id="msg-${message.id}" onclick="selectMessage('${message.id}')">
         <div class="message-item-num">${index + 1}</div>
         <div class="message-item-name">${message.name}</div>
@@ -989,22 +959,24 @@
       </div>
     `).join('');
 
-    if (!selectedMessageId && currentMessages.length) {
-      selectMessage(currentMessages[0].id);
+    if (!selectedMessageId && messages.length) {
+      selectMessage(messages[0].id);
     }
   }
 
   function selectMessage(messageId) {
     selectedMessageId = messageId;
     document.querySelectorAll('.message-item').forEach(el => el.classList.remove('active'));
-    
-    const activeItem = document.getElementById(`msg-${messageId}`);
-    if (activeItem) activeItem.classList.add('active');
+    document.getElementById(`msg-${messageId}`).classList.add('active');
 
-    const message = currentMessages.find(m => m.id === messageId);
+    const messages = getStoredMessages();
+    const message = messages.find(m => m.id === messageId);
     if (!message) return;
 
-    const index = currentMessages.findIndex(m => m.id === messageId);
+    const index = getStoredMessages()
+      .slice()
+      .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
+      .findIndex(m => m.id === messageId);
 
     const detailHtml = `
       <div class="detail-header">
@@ -1027,14 +999,13 @@
     detail.classList.remove('empty');
   }
 
-  async function deleteMessage(messageId) {
+  function deleteMessage(messageId) {
     if (!confirm('Delete this message?')) return;
-    
-    // Delete from remote database
-    await deleteMessageFromDB(messageId);
-    
+    let messages = getStoredMessages();
+    messages = messages.filter(m => m.id !== messageId);
+    saveMessages(messages);
     selectedMessageId = null;
-    await renderInbox();
+    renderInbox();
     showToast('Message deleted.', 'success');
   }
 
@@ -1044,25 +1015,22 @@
     return div.innerHTML;
   }
 
-  async function handleAdminLogin(e) {
+  function handleAdminLogin(e) {
     e.preventDefault();
     const username = document.getElementById('adminUser').value.trim();
     const password = document.getElementById('adminPass').value.trim();
-    
-    // Security note: Hardcoding passwords in frontend JS is visible to anyone inspecting the site.
-    // In a production environment, authentication should also be handled by your backend.
     if (username === 'admin' && password === 'adminlighthouse16') {
       sessionStorage.setItem('lighthouse-admin-auth', 'true');
-      await renderInbox();
+      renderInbox();
       showToast('Admin login successful.', 'success');
     } else {
       showToast('Invalid admin credentials.', 'error');
     }
   }
 
-  async function logoutAdmin() {
+  function logoutAdmin() {
     sessionStorage.removeItem('lighthouse-admin-auth');
-    await renderInbox();
+    renderInbox();
     showToast('You have logged out.', 'success');
   }
 
