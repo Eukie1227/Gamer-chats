@@ -118,6 +118,61 @@
     }
     .bg-glow-1 { top: -100px; left: -100px; }
     .bg-glow-2 { bottom: 10%; right: -100px; animation-delay: 5s; }
+
+    .bg-video {
+      position: fixed;
+      inset: 0;
+      z-index: -5;
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      pointer-events: none;
+      opacity: 0.88;
+      filter: brightness(0.75) saturate(1.15);
+      transform: translateZ(0);
+      min-width: 100vw;
+      min-height: 100vh;
+      background: transparent;
+    }
+
+    .neon-grid {
+      position: fixed; inset: 0; z-index: -3; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(0,210,255,0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,210,255,0.08) 1px, transparent 1px);
+      background-size: 160px 160px, 160px 160px;
+      opacity: 0.12;
+      filter: blur(0.75px);
+      transform: translateZ(0);
+      animation: neonGridShift 22s linear infinite;
+    }
+
+    .neon-beams {
+      position: fixed; inset: 0; z-index: -2; pointer-events: none;
+      background-image:
+        radial-gradient(circle at 15% 20%, rgba(0, 210, 255, 0.12) 0%, transparent 18%),
+        radial-gradient(circle at 80% 15%, rgba(123, 97, 255, 0.10) 0%, transparent 20%),
+        linear-gradient(130deg, transparent 33%, rgba(0, 210, 255, 0.08) 34%, rgba(0, 210, 255, 0.04) 36%, transparent 40%),
+        linear-gradient(220deg, transparent 30%, rgba(0, 255, 255, 0.06) 31%, rgba(0, 210, 255, 0.02) 34%, transparent 38%);
+      background-size: cover;
+      opacity: 0.65;
+      mix-blend-mode: screen;
+      animation: neonBeamPulse 10s ease-in-out infinite alternate;
+    }
+
+    @keyframes neonGridShift {
+      0%   { transform: translate3d(0, 0, 0); }
+      50%  { transform: translate3d(-12px, 10px, 0); }
+      100% { transform: translate3d(0, 0, 0); }
+    }
+
+    @keyframes neonBeamPulse {
+      0% { opacity: 0.45; filter: blur(0.5px); }
+      100% { opacity: 0.72; filter: blur(1.25px); }
+    }
+
     @keyframes floatGlow {
       0%, 100% { transform: translateY(0) scale(1); }
       50%       { transform: translateY(50px) scale(1.1); }
@@ -314,9 +369,11 @@
 
     /* ── HERO ── */
     #hero {
+      position: relative;
       min-height: 100vh; display: flex; align-items: center;
       justify-content: space-between; gap: 2.5rem;
       padding-top: 7rem; flex-wrap: wrap;
+      overflow: visible;
     }
     .hero-content { max-width: 600px; flex: 1 1 300px; }
     .hero-content h1 {
@@ -349,12 +406,12 @@
       50%       { transform: translateY(-20px) rotateY(10deg); }
     }
     .hero-card {
-      width: clamp(220px,30vw,360px); height: clamp(220px,30vw,360px);
+      width: clamp(260px,36vw,560px); height: clamp(260px,36vw,560px);
       background: rgba(19,27,62,0.7);
       border: 1px solid rgba(0,210,255,0.3);
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(8px);
       border-radius: 24px;
-      box-shadow: 0 12px 24px rgba(0,0,0,0.36), 0 0 28px rgba(0,210,255,0.06);
+      box-shadow: 0 16px 36px rgba(0,0,0,0.45), 0 0 48px rgba(0,210,255,0.08);
       display: flex; flex-direction: column; align-items: center; justify-content: center;
       position: relative;
     }
@@ -363,13 +420,13 @@
       border: 1px solid rgba(0,210,255,0.25);
       animation: pulse-ring 3s ease-in-out infinite;
     }
-    .hero-card::before { inset: -14px; animation-delay: 0s; }
-    .hero-card::after  { inset: -28px; border-color: rgba(0,210,255,0.12); animation-delay: 0.5s; }
+    .hero-card::before { inset: -18px; animation-delay: 0s; }
+    .hero-card::after  { inset: -36px; border-color: rgba(0,210,255,0.12); animation-delay: 0.5s; }
     @keyframes pulse-ring {
       0%, 100% { transform: scale(1); opacity: 0.4; }
       50%       { transform: scale(1.07); opacity: 0.8; }
     }
-    .hero-card img { width: 130px; filter: drop-shadow(0 0 20px #00d2ff); }
+    .hero-card img { width: 220px; max-width: 80%; height: auto; filter: drop-shadow(0 0 26px #00d2ff); }
     .hero-card h3 { margin-top: 12px; letter-spacing: 2px; font-weight: 700; font-size: 1.1rem; }
     .hero-card p  { color: #00d2ff; font-size: 0.78rem; letter-spacing: 1px; }
 
@@ -508,7 +565,8 @@
       justify-content: flex-start;
       overflow: visible;
       position: relative;
-      transition: transform 280ms cubic-bezier(.2,.8,.2,1), box-shadow 280ms ease, border-color 280ms ease, background 280ms ease;
+      transition: transform 280ms cubic-bezier(.2,.8,.2,1), border-color 200ms linear;
+      contain: paint;
     }
 
     .equipment-tile:nth-child(2n) { transform: translateY(2px); }
@@ -573,8 +631,7 @@
     .equipment-tile:focus-within {
       transform: translateY(-6px) scale(1.02);
       border-color: rgba(0,210,255,0.82);
-      box-shadow: 0 12px 34px rgba(0,210,255,0.2);
-      background: linear-gradient(180deg, rgba(0,210,255,0.12), rgba(255,255,255,0.02));
+      box-shadow: 0 6px 14px rgba(0,210,255,0.14);
     }
 
     .equipment-tile:hover figure,
@@ -590,8 +647,38 @@
     .equipment-tile:hover img,
     .equipment-tile:focus-within img,
     .equipment-tile:active img {
-      transform: scale(1.05);
-      filter: brightness(1.12) saturate(1.12);
+      transform: scale(1.03);
+      filter: brightness(1.08) saturate(1.06);
+      will-change: transform, opacity;
+    }
+
+    /* Make the tools/equipment gallery static for smooth scrolling */
+    #tools, #tools .equipment-gallery, #tools .equipment-tile, #tools .equipment-name, #tools .equipment-gallery * {
+      animation: none !important;
+      transition: none !important;
+      will-change: auto !important;
+      transform: none !important;
+    }
+    /* Disable hover effects inside the tools section */
+    #tools .equipment-tile:hover, #tools .equipment-tile:focus-within {
+      transform: none !important;
+      box-shadow: none !important;
+      background: none !important;
+      border-color: rgba(255,255,255,0.04) !important;
+    }
+    #tools .equipment-tile img { transform: none !important; filter: none !important; transition: none !important; }
+
+    /* Remove falling/particle animations when requested */
+    body.no-fall #particlesCanvas,
+    body.no-fall .sky-sparks,
+    body.no-fall .light-beam,
+    body.no-fall .bg-glow,
+    body.no-fall::before,
+    body.no-fall::after {
+      display: none !important;
+      animation: none !important;
+      transition: none !important;
+      opacity: 0 !important;
     }
 
     @media (hover: none) {
@@ -726,7 +813,12 @@
 </head>
 <body>
 
-<!-- BG GLOWS -->
+<!-- BACKGROUND EFFECTS -->
+<video class="bg-video" autoplay muted loop playsinline playsinline>
+  <source src="vecteezy_animated-blue-color-wavy-abstract-digital-particle_23887099.mp4" type="video/mp4">
+</video>
+<div class="neon-grid"></div>
+<div class="neon-beams"></div>
 <div class="bg-glow bg-glow-1"></div>
 <div class="bg-glow bg-glow-2"></div>
 <div class="sky-sparks"></div>
@@ -790,7 +882,7 @@
 
   <div class="hero-card-wrap fade-in" style="transition-delay:0.2s">
     <div class="hero-card">
-      <img src="https://hercules-cdn.com/file_fY7pIdm5dXqSMpp4yGkBcg8P" alt="Lighthouse Industries Logo" />
+      <img src="https://hercules-cdn.com/file_fY7pIdm5dXqSMpp4yGkBcg8P" alt="Lighthouse Industries Logo" width="130" height="130" loading="lazy" decoding="async" />
       <h3>LIGHTHOUSE</h3>
       <p>INDUSTRIES</p>
     </div>
@@ -806,21 +898,21 @@
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
       </div>
       <h3>Mission</h3>
-      <p>At Lighthouse Industries, we provide our customers with the most reliable, efficient, and sustainable power solutions available. We strive to exceed expectations by offering innovative products and personalized services tailored to meet the unique needs of each client.</p>
+      <p>At Lighthouse Industries, we provide our customers with the most reliable, efficient, and sustainable power solutions available. We strive to exceed expectations by  products and personalized offering innovative  services tailored to meet the unique needs of each client. With a focus commitment to environmental stewardship, on customer service excellence and a we aim to be the preferred partner for businesses  seeking dependable power protection solutions..</p>
     </div>
     <div class="card fade-in" style="transition-delay:0.15s">
       <div class="card-icon">
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
       </div>
       <h3>Vision</h3>
-      <p>We empower organizations with sustainable and reliable power solutions. Lighthouse Industries envisions a future where businesses thrive with uninterrupted access to efficient, eco-friendly power, setting standard excellence in the industry.</p>
+      <p>We empower organizations with sustainable and reliable power solutions. Lighthouse Industries envisions a future where businesses thrive with uninterrupted access to efficient, eco-friendly power. Through innovation, expertise, and unwavering commitment to customer satisfaction, we aim to be the leading provider of power protection solutions, setting the standard for excellence in the industry..</p>
     </div>
     <div class="card fade-in-right" style="transition-delay:0.3s">
       <div class="card-icon">
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
       </div>
       <h3>Our Story</h3>
-      <p>Born out of a passion for providing dependable power solutions to industries relying on uninterrupted power supply, LHI brings together a wealth of experience. Every interaction with our clients is marked by honesty, transparency, and professionalism.</p>
+      <p>Lighthouse Industries was born out of a passion for providing reliable and efficient power solutions to industries that rely heavily on uninterrupted power supply. The team at LHI brings together a wealth of experience and expertise, garnered from years of working in the power protection industry. Their deep understanding of the challenges faced by businesses in maintaining a consistent power supply drives them to offer innovative and tailored solutions to meet the specific needs of each client. With a strong commitment to service integrity, Lighthouse Industries ensures that every interaction with clients is marked by honesty, transparency, and professionalism. Theyunderstand the critical nature of their products andservices to their clients' operations, and they striveto uphold the highest standards of integrity in all their dealings..</p>
     </div>
   </div>
 </section>
@@ -834,42 +926,42 @@
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22V12M12 12C12 6 6 2 2 6c4 0 6 2 10 6z"/><path d="M12 12c0-6 6-10 10-6-4 0-6 2-10 6z"/></svg>
         Energy-Efficient Devices
       </h4>
-      <p>Range of energy-efficient devices helping businesses reduce carbon footprint and save on power costs.</p>
+      <p>We supply a range of energy-efficient devices that help businesses reduce their carbon footprint and save on energy costs.</p>
     </div>
     <div class="service-card fade-in-right" style="transition-delay:0.08s">
       <h4>
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-        UPS Systems
+        UPS (Uninterrupted Power Supply)
       </h4>
-      <p>Uninterrupted Power Supply systems keeping critical equipment safe during power outages.</p>
+      <p>Our UPS systems ensure that your critical equipment stays powered in the event of a power outage, protecting against data loss and downtime.</p>
     </div>
     <div class="service-card fade-in-left" style="transition-delay:0.16s">
       <h4>
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="6" width="15" height="12" rx="2"/><line x1="23" y1="10" x2="23" y2="14"/></svg>
-        Industrial Batteries
+        Batteries
       </h4>
-      <p>High-quality backup batteries for UPS systems and renewable energy storage solutions.</p>
+      <p>We offer high-quality batteries for various applications, including backup power for UPS systems and renewable energy storage solutions.</p>
     </div>
     <div class="service-card fade-in-right" style="transition-delay:0.24s">
       <h4>
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
         Solar Related Products
       </h4>
-      <p>Harnessing solar power to deliver clean, green, renewable energy for business facilities.</p>
+      <p>Our solar-related products harness the power of the sun to provide clean, renewable energy for your business.</p>
     </div>
     <div class="service-card fade-in-left" style="transition-delay:0.32s">
       <h4>
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
         Consultation &amp; Customization
       </h4>
-      <p>Tailored engineering and custom solution development designed by industry experts.</p>
+      <p>Our team of experts works closely with clients to understand their unique needs and develop customized solutions that meet their requirements.</p>
     </div>
     <div class="service-card fade-in-right" style="transition-delay:0.4s">
       <h4>
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
         Installation &amp; Maintenance
       </h4>
-      <p>Professional installation and ongoing maintenance to guarantee peak operational performance.</p>
+      <p>We offer professional installation services for all our products, as well as ongoing maintenance to ensure they continue to operate at peak performance.</p>
     </div>
   </div>
 </section>
@@ -921,35 +1013,35 @@
     <div class="equipment-gallery power-gallery">
       <article class="equipment-tile">
         <div class="equipment-name" tabindex="0">Hilti Coring Machine</div>
-        <figure><img src="b5ad487b-82d2-483c-b125-51116aeb342c.jfif" alt="Hilti Coring Machine" /></figure>
+        <figure><img src="b5ad487b-82d2-483c-b125-51116aeb342c.jfif" alt="Hilti Coring Machine" height="150" loading="lazy" decoding="async" /></figure>
       </article>
       <article class="equipment-tile">
         <div class="equipment-name" tabindex="0">General Purpose Drill</div>
-        <figure><img src="e0203bcd-70a6-488d-be98-0fab7ba661d6.jfif" alt="General Purpose Drill" /></figure>
+        <figure><img src="e0203bcd-70a6-488d-be98-0fab7ba661d6.jfif" alt="General Purpose Drill" height="150" loading="lazy" decoding="async" /></figure>
       </article>
       <article class="equipment-tile">
         <div class="equipment-name" tabindex="0">Angle Grinder</div>
-        <figure><img src="f19b5019-e667-41c1-877e-d69d1ed0c119.jfif" alt="Angle Grinder" /></figure>
+        <figure><img src="f19b5019-e667-41c1-877e-d69d1ed0c119.jfif" alt="Angle Grinder" height="150" loading="lazy" decoding="async" /></figure>
       </article>
       <article class="equipment-tile">
         <div class="equipment-name" tabindex="0">Chop Saw</div>
-        <figure><img src="bcd632e5-4598-4da7-bd48-81b1601b135d.jfif" alt="Chop Saw" /></figure>
+        <figure><img src="bcd632e5-4598-4da7-bd48-81b1601b135d.jfif" alt="Chop Saw" height="150" loading="lazy" decoding="async" /></figure>
       </article>
       <article class="equipment-tile">
         <div class="equipment-name" tabindex="0">Hot Air Gun</div>
-        <figure><img src="0f0f8016-a604-4a0d-bbb2-1dd3c7a5694a.jfif" alt="Hot Air Gun" /></figure>
+        <figure><img src="0f0f8016-a604-4a0d-bbb2-1dd3c7a5694a.jfif" alt="Hot Air Gun" height="150" loading="lazy" decoding="async" /></figure>
       </article>
       <article class="equipment-tile">
         <div class="equipment-name" tabindex="0">Welding Machine</div>
-        <figure><img src="883e3971-7c2f-4578-a381-c17651cba275.jfif" alt="Welding Machine" /></figure>
+        <figure><img src="883e3971-7c2f-4578-a381-c17651cba275.jfif" alt="Welding Machine" height="150" loading="lazy" decoding="async" /></figure>
       </article>
       <article class="equipment-tile">
         <div class="equipment-name" tabindex="0">Hilti PM4-M Multi Line Laser</div>
-        <figure><img src="616961d6-d89d-4511-be82-229e0ca8ca2d.jfif" alt="Hilti PM4-M Multi Line Laser" /></figure>
+        <figure><img src="616961d6-d89d-4511-be82-229e0ca8ca2d.jfif" alt="Hilti PM4-M Multi Line Laser" height="150" loading="lazy" decoding="async" /></figure>
       </article>
       <article class="equipment-tile">
         <div class="equipment-name" tabindex="0">Hilti PD-1 Range Finder</div>
-        <figure><img src="829c495f-d0d9-430e-8e67-9531e5b8adfb.jfif" alt="Hilti PD-1 Range Finder" /></figure>
+        <figure><img src="829c495f-d0d9-430e-8e67-9531e5b8adfb.jfif" alt="Hilti PD-1 Range Finder" height="150" loading="lazy" decoding="async" /></figure>
       </article>
     </div>
   </div>
@@ -962,31 +1054,31 @@
     <div class="equipment-gallery">
       <article class="equipment-tile">
         <div class="equipment-name" tabindex="0">Fluke Insulation Tester</div>
-        <figure><img src="Pasted Image 1.png" alt="Fluke Insulation Tester" /></figure>
+        <figure><img src="Pasted Image 1.png" alt="Fluke Insulation Tester" height="150" loading="lazy" decoding="async" /></figure>
       </article>
       <article class="equipment-tile">
         <div class="equipment-name" tabindex="0">Fluke Clamp Meter</div>
-        <figure><img src="Pasted Image 2.png" alt="Fluke Clamp Meter" /></figure>
+        <figure><img src="Pasted Image 2.png" alt="Fluke Clamp Meter" height="150" loading="lazy" decoding="async" /></figure>
       </article>
       <article class="equipment-tile">
         <div class="equipment-name" tabindex="0">Fluke Phase Sequencer</div>
-        <figure><img src="Pasted Image 3.png" alt="Fluke Phase Sequencer" /></figure>
+        <figure><img src="Pasted Image 3.png" alt="Fluke Phase Sequencer" height="150" loading="lazy" decoding="async" /></figure>
       </article>
       <article class="equipment-tile">
         <div class="equipment-name" tabindex="0">Hydraulic Crimper</div>
-        <figure><img src="Pasted Image 4.png" alt="Hydraulic Crimper" /></figure>
+        <figure><img src="Pasted Image 4.png" alt="Hydraulic Crimper" height="150" loading="lazy" decoding="async" /></figure>
       </article>
       <article class="equipment-tile">
         <div class="equipment-name" tabindex="0">Knock Out Puncher</div>
-        <figure><img src="Pasted Image 5.png" alt="Knock Out Puncher" /></figure>
+        <figure><img src="Pasted Image 5.png" alt="Knock Out Puncher" height="150" loading="lazy" decoding="async" /></figure>
       </article>
       <article class="equipment-tile">
         <div class="equipment-name" tabindex="0">Socket Wrench Set</div>
-        <figure><img src="Pasted Image 6.png" alt="Socket Wrench Set" /></figure>
+        <figure><img src="Pasted Image 6.png" alt="Socket Wrench Set" height="150" loading="lazy" decoding="async" /></figure>
       </article>
       <article class="equipment-tile">
         <div class="equipment-name" tabindex="0">Coax Cable Stripper</div>
-        <figure><img src="Pasted Image 7.png" alt="Coax Cable Stripper" /></figure>
+        <figure><img src="Pasted Image 7.png" alt="Coax Cable Stripper" height="150" loading="lazy" decoding="async" /></figure>
       </article>
     </div>
   </div>
@@ -1088,10 +1180,14 @@
   }, { rootMargin: '-60px' });
   fadeEls.forEach(el => fadeObserver.observe(el));
 
+  // Disable falling particles/ambient motion by default on user request
+  document.body.classList.add('no-fall');
+
   // ── PARTICLES (canvas-based for smoother performance) ──
   (function() {
     const canvas = document.getElementById('particlesCanvas');
     if (!canvas) return;
+    if (document.body.classList.contains('no-fall')) { canvas.style.display = 'none'; return; }
     const ctx = canvas.getContext('2d');
     const DPR = Math.max(1, window.devicePixelRatio || 1);
     function resize() {
@@ -1104,7 +1200,7 @@
     resize();
     window.addEventListener('resize', () => { resize(); }, { passive: true });
 
-    const PARTICLE_COUNT = 40;
+    const PARTICLE_COUNT = 24;
     const particles = new Array(PARTICLE_COUNT).fill(0).map(() => ({
       x: Math.random(),
       y: Math.random(),
