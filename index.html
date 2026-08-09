@@ -7,6 +7,14 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
+    /* PERFORMANCE HINTS */
+    :root { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+    /* Use will-change only on actual animated layers */
+    body::before, body::after, .sky-sparks, .bg-glow, .hero-card, .particle, .light-beam {
+      will-change: transform, opacity;
+    }
+    /* Avoid forcing GPU flattening everywhere (can hurt performance) */
+
     body {
       background-color: #03113e;
       background-image:
@@ -33,7 +41,8 @@
         radial-gradient(circle at 81% 44%, rgba(35,122,210,0.34) 0%, transparent 26%),
         radial-gradient(circle at 62% 12%, rgba(38,204,245,0.30) 0%, transparent 22%),
         radial-gradient(circle at 40% 34%, rgba(86,183,255,0.36) 0%, transparent 25%);
-      filter: blur(40px);
+      /* reduced blur for performance */
+      filter: blur(20px);
       transform: scale(1.04);
       animation: nebulaWave 12s ease-in-out infinite alternate;
     }
@@ -61,6 +70,20 @@
       opacity: 0.90;
       animation: particlesDrift 11s linear infinite alternate;
     }
+
+    /* Reduce/disable heavy visuals while user is actively scrolling to avoid jank */
+    body.is-scrolling::before,
+    body.is-scrolling::after,
+    body.is-scrolling .sky-sparks,
+    body.is-scrolling .particle,
+    body.is-scrolling .light-beam,
+    body.is-scrolling .bg-glow {
+      animation-play-state: paused !important;
+      transition: none !important;
+    }
+    body.is-scrolling::before { filter: blur(8px) !important; }
+    body.is-scrolling::after  { filter: blur(0.2px) !important; }
+    body.is-scrolling header { backdrop-filter: none !important; }
 
     body > .sky-sparks {
       position: fixed;
@@ -499,9 +522,7 @@
 
     .equipment-tile figure {
       width: 100%;
-      max-height: 0;
-      min-height: 0;
-      height: 0;
+      height: 150px; /* fixed visual size to avoid layout reflows */
       margin: 0;
       padding: 0;
       border-radius: 12px;
@@ -513,9 +534,9 @@
       overflow: hidden;
       opacity: 0;
       pointer-events: none;
-      transform: translateY(0) scaleY(0.82);
-      transform-origin: top center;
-      transition: max-height 420ms cubic-bezier(.2,.8,.2,1), min-height 420ms cubic-bezier(.2,.8,.2,1), height 420ms cubic-bezier(.2,.8,.2,1), opacity 280ms ease, transform 420ms cubic-bezier(.2,.8,.2,1), border-color 280ms ease, padding 280ms ease;
+      transform: translateY(8px) scaleY(0.96);
+      transform-origin: center center;
+      transition: opacity 280ms ease, transform 360ms cubic-bezier(.2,.8,.2,1), border-color 280ms ease, padding 280ms ease;
       z-index: 2;
       position: relative;
     }
@@ -566,9 +587,6 @@
     .equipment-tile:hover figure,
     .equipment-tile:focus-within figure,
     .equipment-tile:active figure {
-      max-height: 180px;
-      min-height: 150px;
-      height: 150px;
       opacity: 1;
       pointer-events: auto;
       padding: 0.35rem;
@@ -697,6 +715,11 @@
     #toast.error   { border-color: #ff5555; }
 
     /* ── RESPONSIVE ── */
+    /* Accessibility: respect reduced motion preferences */
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+      .particle { display: none !important; }
+    }
     @media (max-width: 768px) {
       nav, header > .btn-primary { display: none; }
       .hamburger { display: block; }
@@ -1104,6 +1127,19 @@
     const target = `https://mail.google.com/mail/u/0/?view=cm&fs=1&to=${encodeURIComponent(email)}`;
     window.open(target, '_blank', 'noopener,noreferrer');
   }
+
+  // ── SCROLL PERFORMANCE HELPERS ──
+  (function() {
+    let scrollTimer = null;
+    const scroller = () => {
+      document.body.classList.add('is-scrolling');
+      if (scrollTimer) clearTimeout(scrollTimer);
+      scrollTimer = setTimeout(() => { document.body.classList.remove('is-scrolling'); scrollTimer = null; }, 120);
+    };
+    window.addEventListener('scroll', scroller, { passive: true });
+    window.addEventListener('wheel', scroller, { passive: true });
+    window.addEventListener('touchstart', scroller, { passive: true });
+  })();
 </script>
 </body>
 </html>
