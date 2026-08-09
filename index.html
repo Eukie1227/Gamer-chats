@@ -147,8 +147,8 @@
       display: flex; justify-content: space-between; align-items: center;
       padding: 1rem 6%;
       background: rgba(11,16,38,0.95);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(0,210,255,0.1);
+      backdrop-filter: blur(6px);
+      border-bottom: 1px solid rgba(0,210,255,0.08);
     }
     .nav-logo {
       display: flex; align-items: center; gap: 8px;
@@ -174,14 +174,14 @@
       cursor: pointer; box-shadow: 0 4px 12px rgba(0,210,255,0.3);
       transition: transform 0.2s, box-shadow 0.2s; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
     }
-    .btn-primary:hover { transform: translateY(-3px) scale(1.05); box-shadow: 0 10px 20px rgba(0,210,255,0.5); }
+    .btn-primary:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 6px 12px rgba(0,210,255,0.36); }
     .hamburger { display: none; background: none; border: none; color: #fff; cursor: pointer; padding: 4px; }
     .mobile-menu {
       display: none; flex-direction: column; gap: 4px;
       position: absolute; top: 100%; left: 0; width: 100%;
       background: rgba(11,16,38,0.98); backdrop-filter: blur(12px);
-      border-top: 1px solid rgba(0,210,255,0.1);
-      box-shadow: 0 20px 40px rgba(0,0,0,0.5); padding: 1.2rem 6%;
+      border-top: 1px solid rgba(0,210,255,0.08);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.36); padding: 1.2rem 6%;
     }
     .mobile-menu.open { display: flex; }
     .mobile-menu a {
@@ -354,7 +354,7 @@
       border: 1px solid rgba(0,210,255,0.3);
       backdrop-filter: blur(10px);
       border-radius: 24px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 60px rgba(0,210,255,0.1);
+      box-shadow: 0 12px 24px rgba(0,0,0,0.36), 0 0 28px rgba(0,210,255,0.06);
       display: flex; flex-direction: column; align-items: center; justify-content: center;
       position: relative;
     }
@@ -373,16 +373,9 @@
     .hero-card h3 { margin-top: 12px; letter-spacing: 2px; font-weight: 700; font-size: 1.1rem; }
     .hero-card p  { color: #00d2ff; font-size: 0.78rem; letter-spacing: 1px; }
 
-    /* Particles */
-    .particles { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
-    .particle {
-      position: absolute; border-radius: 50%; background: #00d2ff;
-      animation: floatParticle linear infinite;
-    }
-    @keyframes floatParticle {
-      0%, 100% { transform: translateY(0); opacity: 0.2; }
-      50%       { transform: translateY(-30px); opacity: 0.7; }
-    }
+    /* Particles: canvas-backed for efficiency */
+    .particles { position: absolute; inset: 0; pointer-events: none; z-index: 0; display: block; }
+    #particlesCanvas { width: 100%; height: 100%; display: block; }
     /* Light beam */
     .light-beam {
       position: absolute; top: 0; left: 0; width: 30%; height: 100%;
@@ -778,7 +771,7 @@
 
 <!-- ═══════════════ HERO ═══════════════ -->
 <section id="hero">
-  <div class="particles" id="particles"></div>
+  <canvas id="particlesCanvas" class="particles"></canvas>
   <div class="light-beam"></div>
 
   <div class="hero-content">
@@ -1095,22 +1088,71 @@
   }, { rootMargin: '-60px' });
   fadeEls.forEach(el => fadeObserver.observe(el));
 
-  // ── PARTICLES ──
+  // ── PARTICLES (canvas-based for smoother performance) ──
   (function() {
-    const container = document.getElementById('particles');
-    for (let i = 0; i < 28; i++) {
-      const p = document.createElement('div');
-      p.className = 'particle';
-      const size = Math.random() * 3 + 1;
-      const dur  = (Math.random() * 8 + 6).toFixed(1);
-      const del  = (Math.random() * 5).toFixed(1);
-      p.style.cssText = `
-        left:${Math.random()*100}%;top:${Math.random()*100}%;
-        width:${size}px;height:${size}px;
-        box-shadow:0 0 ${size*3}px #00d2ff;
-        animation-duration:${dur}s;animation-delay:${del}s;
-      `;
-      container.appendChild(p);
+    const canvas = document.getElementById('particlesCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const DPR = Math.max(1, window.devicePixelRatio || 1);
+    function resize() {
+      const w = canvas.clientWidth || window.innerWidth;
+      const h = canvas.clientHeight || window.innerHeight;
+      canvas.width = Math.round(w * DPR);
+      canvas.height = Math.round(h * DPR);
+      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    }
+    resize();
+    window.addEventListener('resize', () => { resize(); }, { passive: true });
+
+    const PARTICLE_COUNT = 40;
+    const particles = new Array(PARTICLE_COUNT).fill(0).map(() => ({
+      x: Math.random(),
+      y: Math.random(),
+      r: Math.random() * 2.2 + 0.6,
+      vy: Math.random() * 0.02 + 0.005,
+      sway: Math.random() * 22,
+      phase: Math.random() * Math.PI * 2,
+      alpha: Math.random() * 0.55 + 0.15
+    }));
+
+    let running = true;
+    function draw(ts) {
+      if (!running) { requestAnimationFrame(draw); return; }
+      const W = canvas.clientWidth || window.innerWidth;
+      const H = canvas.clientHeight || window.innerHeight;
+      ctx.clearRect(0, 0, W, H);
+      const time = ts / 1000;
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+        p.y += p.vy;
+        if (p.y > 1.15) p.y = -0.15;
+        const px = p.x * W + Math.sin(time * 0.6 + p.phase) * p.sway;
+        const py = p.y * H;
+        const rad = p.r * 6;
+        const g = ctx.createRadialGradient(px, py, 0, px, py, rad);
+        g.addColorStop(0, `rgba(0,210,255,${p.alpha})`);
+        g.addColorStop(1, 'rgba(0,210,255,0)');
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.arc(px, py, rad, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      requestAnimationFrame(draw);
+    }
+
+    requestAnimationFrame(draw);
+
+    // Pause canvas animation while actively scrolling (reduces jank)
+    const mo = new MutationObserver(() => {
+      running = !document.body.classList.contains('is-scrolling');
+      canvas.style.opacity = running ? '1' : '0.6';
+    });
+    mo.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+
+    // Respect reduced motion preference
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      running = false;
+      canvas.style.display = 'none';
     }
   })();
 
