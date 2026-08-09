@@ -7,13 +7,11 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    /* ── MOBILE SLIDE FIX ── */
-    html, body {
-      max-width: 100vw;
-      overflow-x: hidden;
+    body {
       background-color: #0b1026;
       color: #fff;
       font-family: 'Segoe UI', sans-serif;
+      overflow-x: hidden;
     }
 
     /* ── SCROLLBAR ── */
@@ -511,7 +509,7 @@
     <a href="#interests" onclick="smoothScroll('#interests');closeMenu();return false;">Capabilities</a>
     <a href="#tools"     onclick="smoothScroll('#tools');closeMenu();return false;">Equipment</a>
     <a href="#contact"   onclick="smoothScroll('#contact');closeMenu();return false;">Contact</a>
-    <a href="#contact" onclick="smoothScroll('#contact');return false;" class="btn-primary">Get Started</a>
+    <a href="#contact" onclick="smoothScroll('#contact');closeMenu();return false;" class="btn-primary">Get Started</a>
   </div>
 </header>
 
@@ -742,6 +740,10 @@
   <p>&copy; <span id="year"></span> Lighthouse Industries. All rights reserved.</p>
 </footer>
 
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js"></script>
+
 <!-- BACK TO TOP -->
 <button id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"/></svg>
@@ -791,6 +793,33 @@
 </div>
 
 <script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyALFpw6LcrrcGVS66tHtXEcdNnSyMbSDxg",
+    authDomain: "contactform-bd506.firebaseapp.com",
+    databaseURL: "https://contactform-bd506-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "contactform-bd506",
+    storageBucket: "contactform-bd506.firebasestorage.app",
+    messagingSenderId: "857390892349",
+    appId: "1:857390892349:web:adff3fd473d586752cf154",
+    measurementId: "G-E1E5LKDW2J"
+  };
+
+  if (window.firebase && firebase.apps && firebase.apps.length === 0) {
+    firebase.initializeApp(firebaseConfig);
+  }
+
+  const messaging = (window.firebase && firebase.messaging) ? firebase.messaging() : null;
+
+  if ('serviceWorker' in navigator && messaging) {
+    navigator.serviceWorker.register('firebase-messaging-sw.js')
+      .then(() => {
+        console.log('Firebase Messaging service worker registered');
+      })
+      .catch((err) => {
+        console.error('Failed to register Firebase Messaging service worker:', err);
+      });
+  }
+
   // ── YEAR ──
   document.getElementById('year').textContent = new Date().getFullYear();
 
@@ -864,34 +893,26 @@
     setTimeout(() => { t.className = ''; }, 4000);
   }
 
-  // ── CONTACT FORM & FIREBASE DATABASE INTEGRATION ──
-  // PASTE YOUR REAL DATABASE ENDPOINT URL BELOW
-  // Example: 'https://lighthouse-db-default-rtdb.firebaseio.com/messages'
-  const API_URL = 'https://YOUR-PROJECT-ID-default-rtdb.firebaseio.com/messages';
+  // ── CONTACT FORM & API INTEGRATION ──
+  // Note: Replace this URL with your actual backend API endpoint
+  const API_URL = 'https://your-database-api-url.com/messages';
 
-  // Fetch messages from Firebase
+  // Fetch messages from the cloud database
   async function getStoredMessages() {
     try {
-      const response = await fetch(`${API_URL}.json`);
+      const response = await fetch(API_URL);
       if (!response.ok) throw new Error('Network response was not ok');
-      const data = await response.json();
-      if (!data) return [];
-
-      // Convert Firebase key-value object map into a clean UI array
-      return Object.keys(data).map(key => ({
-        id: key,
-        ...data[key]
-      }));
+      return await response.json();
     } catch (error) {
       console.error('Error fetching messages from database:', error);
-      return [];
+      return []; // Return empty array on failure
     }
   }
 
-  // Save a new message to Firebase
+  // Save a new message to the cloud database
   async function saveMessageToDB(message) {
     try {
-      await fetch(`${API_URL}.json`, {
+      await fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(message)
@@ -901,10 +922,10 @@
     }
   }
 
-  // Delete a message from Firebase
+  // Delete a message from the cloud database
   async function deleteMessageFromDB(messageId) {
     try {
-      await fetch(`${API_URL}/${messageId}.json`, {
+      await fetch(`${API_URL}/${messageId}`, {
         method: 'DELETE'
       });
     } catch (error) {
@@ -928,13 +949,14 @@
     btn.disabled = true;
 
     const newMessage = {
+      id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
       name,
       email,
       message: msg,
       createdAt: new Date().toISOString()
     };
 
-    // Save to database
+    // Save to remote database
     await saveMessageToDB(newMessage);
 
     btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Send Message';
@@ -962,7 +984,7 @@
   }
 
   let selectedMessageId = null;
-  let currentMessages = [];
+  let currentMessages = []; // Hold messages in memory for UI rendering
 
   async function renderInbox() {
     const inboxView = document.getElementById('inboxView');
@@ -1039,6 +1061,7 @@
   async function deleteMessage(messageId) {
     if (!confirm('Delete this message?')) return;
     
+    // Delete from remote database
     await deleteMessageFromDB(messageId);
     
     selectedMessageId = null;
@@ -1057,6 +1080,8 @@
     const username = document.getElementById('adminUser').value.trim();
     const password = document.getElementById('adminPass').value.trim();
     
+    // Security note: Hardcoding passwords in frontend JS is visible to anyone inspecting the site.
+    // In a production environment, authentication should also be handled by your backend.
     if (username === 'admin' && password === 'adminlighthouse16') {
       sessionStorage.setItem('lighthouse-admin-auth', 'true');
       await renderInbox();
